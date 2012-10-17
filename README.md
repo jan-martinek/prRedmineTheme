@@ -1,4 +1,4 @@
-prRedmineTheme
+P&R RedmineTheme
 ==============
 
-pr
+Custom Redmine theme.

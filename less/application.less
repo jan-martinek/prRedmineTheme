@@ -1,0 +1,107 @@
+@import url(../../../stylesheets/application.css);
+
+html, body, #wrapper { background-color: #112631; height: 100%; }
+#wrapper2 { min-height: 100% }
+#header, #top-menu { margin: 0px; }
+#header {  background: #112631 url("./img/border.png") 0 0 repeat-x; padding: 20px 20px 0; height: 35px;}
+#top-menu {  background: #182f3c; padding: 7px 20px 3px;
+	#loggedas, a { font-weight: normal; color: #5fbaed}
+	a:hover { color: white; }
+}
+#main { background: white; padding: 10px 0px; margin: 25px 20px; border-radius: 0 2px 2px 2px; }
+body.controller-welcome #main { border-radius: 2px; margin-top: 0px; }
+#content, #main.nosidebar #content { background: #fff; border: 0; padding-left: 15px; width: auto; padding-right: 300px; }
+#sidebar { width: 255px; background: #eee; border: 0; margin-top: -10px; padding: 15px; border-radius: 0 2px 0 2px;}
+#footer { background-color: #112631; border: 0px; }
+
+/* Headers */
+h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
+
+#header h1 {
+	background: url("./img/pr.png") -15px 10px no-repeat;
+	padding: 22px 0 0 245px;
+	font-weight: normal;
+	min-height: 30px;
+	font-size: 18px;
+	margin: -20px auto 0;
+	color: #5fbaed;
+}
+
+/* Menu */
+#main-menu { left: 20px; bottom: -25px; }
+#main-menu li a { color: rgba(255, 255, 255, .7); background-color: #182f3c + #111; border-radius: 2px 2px 0 0; font-weight: bold;}
+#main-menu li a:hover { background: #5fbaed - #222; text-decoration: underline; }
+#main-menu li a.selected, #main-menu li a.selected:hover { background-color: white; }
+
+/* Tables */
+table.list tbody td, table.list tbody tr:hover td { border: solid 1px #eee; }
+table.list thead th {
+    border-width: 1px;
+    border-style: solid;
+    border-top-color: #d7d7d7;
+    border-right-color: #d7d7d7;
+    border-left-color: #d7d7d7;
+    border-bottom-color: #999999;
+}
+
+/* Issues grid styles by priorities (provided by Wynn Netherland) */
+table.issues {
+	tr.issue a { color: #555; }
+	tr.issue td { padding: 3px 5px; }
+
+	tr.odd.priority-5, table.list tbody tr.odd.priority-5:hover { color: #900; }
+	tr.odd.priority-5 { background: #ffc4c4; }
+	tr.even.priority-5, table.list tbody tr.even.priority-5:hover { color: #900; }
+	tr.even.priority-5 { background: #ffd4d4; }
+	tr.priority-5 a, tr.priority-5:hover a { color: #900; }
+	tr.odd.priority-5 td, tr.even.priority-5 td { border-color: #ffb4b4; }
+
+	tr.odd.priority-3, table.list tbody tr.odd.priority-3:hover { color: #aaa; }
+	tr.odd.priority-3 { background: #efefef; }
+	tr.even.priority-3, table.list tbody tr.even.priority-3:hover { color: #aaa; }
+	tr.even.priority-3 { background: #fff; }
+	tr.priority-3 a { color: #aaa; }
+	tr.odd.priority-3 td, tr.even.priority-3 td { border-color: #eee; }
+
+	td.priority {  width: 30px; overflow: hidden; text-indent: -999px; }
+	td.priority { background: 50% 50% url('./img/normal.png') no-repeat; }
+	tr.priority-5 td.priority { background-image: url('./img/high.png'); }
+	tr.priority-3 td.priority { background-image: url('./img/low.png'); }
+
+	//td.status { white-space: normal; }
+	td.project { text-align: left; max-width: 100px; overflow: hidden; font-weight: bold !important; }
+	th[title='Sort by "Status"'], td.status { width: 30px; overflow: hidden; }
+	//td.updated_on, td.due_date { text-align: left; overflow: hidden; padding: 0; }
+}
+
+/* Buttons */
+input[type="button"], input[type="submit"], input[type="reset"] { background-color: #f2f2f2; color: #222222; border: 1px outset #cccccc; }
+input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover { background-color: #ccccbb; }
+
+/* Fields */
+input[type="text"], input[type="password"], textarea, select { padding: 2px; border: 1px solid #d7d7d7; font-size: 12px }
+input[type="text"], input[type="password"] { padding: 3px; }
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus { border: 1px solid #888866; }
+option { border-bottom: 1px dotted #d7d7d7; }
+
+/* Misc */
+.box { background-color: #fcfcfc; }
+#quick-search #q, #project_quick_jump_box {
+	font-size: 12px !important;
+	background: #112631;
+	border: 1px solid #112631 + #222;
+	color: #ddd;
+}
+#quick-search, #quick-search a {
+	color: #5fbaed;
+}
+#project_quick_jump_box:focus { background: #eee; color: #112631 + #222; }
+
+.box, .splitcontentright, .splitcontentleft {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	margin-bottom: 30px;
+}
+
+div.issue { border: 0; padding: 15px; }
