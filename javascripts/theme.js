@@ -71,24 +71,26 @@
       units = key; // keeps track of the selected key over the iteration
       if (units == 'hour' || units == 'minute'  || units == 'day') {
         units = units.substr(0, 1)
+      } else {
+        units = ' ' + units
       }
-      delta = delta / CONVERSIONS[key];
+      delta = delta / CONVERSIONS[key]
     }
 
     // pluralize a unit when the difference is greater than 1.
     delta = Math.floor(delta);
     if (delta !== 1 && units.length > 1) { units += "s"; }
-    return [delta, units, future ? " left" : " ago"].join("");
+    return [delta, units, future ? " left" : " ago"].join("")
   };
 
   var processOptions = function(arg) {
     if (!arg) arg = 0;
     if (typeof arg === 'string') {
-      arg = parseInt(arg, 10);
+      arg = parseInt(arg, 10)
     }
     if (typeof arg === 'number') {
-      if (isNaN(arg)) arg = 0;
-      return {nowThreshold: arg};
+      if (isNaN(arg)) arg = 0
+      return {nowThreshold: arg}
     }
     return arg;
   };
@@ -190,6 +192,9 @@ $(document).ready(function() {
     })
 
     toggleTableReplacement('table.issues', 'status')
+
+    // header links
+    $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>')
 
 })
 
