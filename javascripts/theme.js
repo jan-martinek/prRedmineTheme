@@ -70,11 +70,9 @@
         break;
       units = key; // keeps track of the selected key over the iteration
       if (units == 'hour' || units == 'minute'  || units == 'day') {
-      	units = units.substr(0, 1)
-      } else {
-        units = ' ' + units
+        units = units.substr(0, 1)
       }
-      delta = delta / CONVERSIONS[key]
+      delta = delta / CONVERSIONS[key];
     }
 
     // pluralize a unit when the difference is greater than 1.
@@ -138,33 +136,71 @@ Date.fromString = function(str) {
 
 $(document).ready(function() {
 
+    // relative times
+
     $('.updated_on, .due_date').each(function(i, obj) {
-        var issueDate = $(this).text();
+        var issueDate = $(this).text()
+        var cellClass = ''
+        if ($(this).hasClass('updated_on')) cellClass = 'updated_on'
+        if ($(this).hasClass('due_date')) cellClass = 'due_date'
 
         if (issueDate) {
             $(this).attr('title', issueDate)
-            issueDate = issueDate.replace(" ", '-').replace(":", '-').split("-")
+            issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-")
 
-            var year = issueDate[0]
-            var month = issueDate[1]-1
-            var day = issueDate[2]
-            var minutes = issueDate[3] ? issueDate[3] : 0
-            var seconds = issueDate[4] ? issueDate[4] : 0
+            var year = issueDateArray[0]
+            var month = issueDateArray[1]-1
+            var day = issueDateArray[2]
+            var minutes = issueDateArray[3] ? issueDateArray[3] : 0
+            var seconds = issueDateArray[4] ? issueDateArray[4] : 0
 
             var date = new Date(year, month, day, minutes, seconds)
-            $(this).html(date.toRelativeTime(new Date, 5000, true))
+            var relativeDate = date.toRelativeTime(new Date, 5000, true)
 
+            $(this).before('<td class="' + cellClass + '-replacement" title="' + issueDate + '">' + relativeDate + '</td>')
+
+        } else {
+            $(this).before('<td class="' + cellClass + '-replacement" title=""></td>')
         }
+        $(this).hide();
     })
 
-    $('.updated_on, .due_date').click(function() {
-      $('.updated_on, .due_date').each(function(i, obj) {
-        var title = $(this).attr('title')
-        $(this).attr('title', $(this).text())
-        $(this).html(title)
-      })
+    toggleTableReplacement('table.issues', 'due_date')
+    toggleTableReplacement('table.issues', 'updated_on')
+
+
+    // status
+    var statusReplacements = {
+      'Nový / New' : 'file',
+      'Přiřazený / Assigned' : 'user',
+      'Vyřešený / Solved' : 'ok',
+      'Feedback' : 'headphones',
+      'Čeká se / Waiting' : 'refresh',
+      'Odložený / Postponed' : 'fast-forward',
+      'Čeká na klienta' : 'eye-open',
+      'Uzavřený / Closed' : 'home',
+      'Odmítnutý / Rejected' : 'ban-circle'
+    }
+
+    $('table.issues td.status').each(function(i, obj) {
+      statusName = $(this).text()
+      if (statusName.length) {
+        $(this).before('<td class="status-replacement" title="'+statusName+'" style="display: none"><i class="bootstrap-icon-'+statusReplacements[statusName]+'"></i></td>')
+      }
     })
 
-    $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>')
+    toggleTableReplacement('table.issues', 'status')
 
 })
+
+function toggleTableReplacement(tableIdentifier, cellClass) {
+    $(tableIdentifier).on("click", 'td.' + cellClass + ', td.' + cellClass + '-replacement', function(event){
+      if ($(this).hasClass(cellClass + '-replacement')) {
+        $('.' + cellClass + '-replacement').hide();
+        $('.' + cellClass).show();
+      } else {
+        $('.' + cellClass + '-replacement').show();
+        $('.' + cellClass).hide();
+      }
+  })
+}
