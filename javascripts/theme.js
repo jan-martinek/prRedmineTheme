@@ -173,21 +173,38 @@ $(document).ready(function() {
 
     // status
     var statusReplacements = {
-      'Nový / New' : 'file',
-      'Přiřazený / Assigned' : 'user',
-      'Vyřešený / Solved' : 'ok',
-      'Feedback' : 'headphones',
-      'Čeká se / Waiting' : 'refresh',
-      'Odložený / Postponed' : 'fast-forward',
-      'Čeká na klienta' : 'eye-open',
-      'Uzavřený / Closed' : 'home',
-      'Odmítnutý / Rejected' : 'ban-circle'
+      'Nový / New' : ['file'],
+      'Přiřazený / Assigned' : ['user'],
+      'Vyřešený / Solved' : ['ok'],
+      'Feedback' : ['comment'],
+      'Čeká se / Waiting' : ['refresh'],
+      'Odložený / Postponed' : ['stop'],
+      'Čeká na klienta' : ['eye-open'],
+      'Uzavřený / Closed' : ['home'],
+      'Odmítnutý / Rejected' : ['ban-circle'],
+      'Needs explanation' : ['question-sign'],
+      'Needs design' : ['picture'],
+      'Refused' : ['ban-circle'],
+      'Needs estimation' : ['time'],
+      'Needs estimation approval' : ['time', 'ok-sign'],
+      'Needs implementation' : ['thumbs-up'],
+      'Needs code review' : ['th-list'],
+      'Needs deployment' : ['upload'],
+      'Needs review' : ['eye-open'],
+      'Closed' : ['home']
     }
 
     $('table.issues td.status').each(function(i, obj) {
       statusName = $(this).text()
+
+      var replacementCell = '<td class="status-replacement" title="'+statusName+'" style="display: none">'
+      for (var i = 0; i < statusReplacements[statusName].length; i++) {
+        replacementCell += '<i class="bootstrap-icon-'+statusReplacements[statusName][i]+'"></i>'
+      }
+      replacementCell += '</td>'
+
       if (statusName.length) {
-        $(this).before('<td class="status-replacement" title="'+statusName+'" style="display: none"><i class="bootstrap-icon-'+statusReplacements[statusName]+'"></i></td>')
+        $(this).before(replacementCell)
       }
     })
 

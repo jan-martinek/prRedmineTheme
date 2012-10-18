@@ -83,10 +83,16 @@ input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hove
 input[type="text"], input[type="password"], textarea, select { padding: 2px; border: 1px solid #d7d7d7; font-size: 13px }
 input[type="text"], input[type="password"] { padding: 3px; }
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus { border: 1px solid #888866; }
+input[type="file"]::-webkit-file-upload-button, button { font-size: 13px; }
 option { border-bottom: 1px dotted #d7d7d7; }
 
+textarea.wiki-edit {
+    color: #333;
+    padding: 0.5%;
+}
+
 /* Misc */
-.box { background-color: #fcfcfc; }
+.box { background-color: #fcfcfc; margin-bottom: 10px; }
 #quick-search #q, #project_quick_jump_box {
 	font-size: 12px !important;
 	background: #112631;
@@ -106,6 +112,11 @@ option { border-bottom: 1px dotted #d7d7d7; }
 }
 
 div.issue { border: 0; padding: 15px; }
+
+.pagination {
+    font-size: 13px;
+    text-align: center;
+}
 
 .go-to-my-issues {
 	display: none;
