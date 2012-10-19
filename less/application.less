@@ -91,6 +91,46 @@ textarea.wiki-edit {
     padding: 0.5%;
 }
 
+/* Login */
+
+ body.action-login {
+ 	#top-menu { text-indent: -9999px; height: 100px; }
+ 	#header {
+ 		h1 {
+ 			text-indent: -9999px;
+ 			padding: 30px;
+ 			background-position: 50% 50%;
+ 		}
+ 	}
+ 	#main { background: transparent !important; }
+ 	#main #content { padding: 0; background: transparent;
+
+	 	#login-form table {
+	 		border: 1px solid #182f3c + #111;
+	 		background: #182f3c;
+
+	 		a, label {
+	 			color: #5fbaed + #222;
+	 		}
+	 		input[type='submit'] {
+	 			padding: 5px 10px;
+	 			color: #5fbaed + #222;
+	 			background: #112631;
+	 			border: 1px outset #182f3c;
+	 		}
+	 		input[type='password'], input[type='text'] {
+	 			font-size: 12px !important;
+				background: #112631;
+				border: 1px solid #112631 + #222;
+				color: #ddd;
+				padding: 7px;
+				width: 140px;
+	 		}
+	 	}
+ 	}
+ }
+
+
 /* Misc */
 .box { background-color: #fcfcfc; margin-bottom: 10px; }
 #quick-search #q, #project_quick_jump_box {
@@ -117,7 +157,6 @@ div.issue { border: 0; padding: 15px; }
     font-size: 13px;
     text-align: center;
 }
-
 .go-to-my-issues {
 	display: none;
 	display: inline-block;
