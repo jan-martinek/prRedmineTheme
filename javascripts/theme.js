@@ -388,7 +388,7 @@ function createVerbalDate(value) {
         case 4:
         case 5:
         case 6:
-          textualDueDate = daysCount + weekday[date.getDay()];
+          textualDueDate = weekday[date.getDay()];
           break;
         default:
           textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
