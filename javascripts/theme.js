@@ -87,7 +87,7 @@ function showAlternateCellContent(cells, valueName) {
     $(this).data('currentlyViewed', valueName);
   });
 
-  $.cookie(cells, valueName, { expires: 7 });
+  $.cookie(cells, valueName, { expires: 7, path: '/' });
 }
 
 function toggleAlternateCellContents(cells) {
@@ -98,8 +98,6 @@ function toggleAlternateCellContents(cells) {
   for (var param in data) {
     if (param.indexOf('VAL') === 0) variants.push(param.substring(3));
   }
-
-  console.log(cell.data('currentlyViewed'));
 
   currentViewPosition = $.inArray(cell.data('currentlyViewed'), variants);
   nextViewPosition = (currentViewPosition < variants.length - 1) ? currentViewPosition + 1 : 0;
