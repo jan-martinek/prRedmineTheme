@@ -1,3 +1,260 @@
+// Template code
+
+$(document).ready(function() {
+
+    //set closing time automatically on baufinder – temporary solution with timeout
+    if ($('#issue_custom_field_values_24').size() > 0) {
+      $('#all_attributes').on('change', 'select#issue_status_id', function() {
+        if ($('select#issue_status_id').val() == 17) { // Closed (on baufinder)
+          setTimeout(function() {
+            var date = new Date();
+            $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
+            $('#issue_custom_field_values_24').highlight();
+          }, 500);
+        }
+      });
+    }
+
+    // return closed ticket to its author - temporary solution with timeout
+    $('#all_attributes').on('change','select#issue_status_id',  function() {
+      if ($(this).val() == 5) { // Uzavreny / Closed
+        var author = $('p.author a').first().attr('href').substring(7);
+
+        setTimeout(function() {
+          $('select#issue_assigned_to_id').val(author);
+          $('select#issue_assigned_to_id').highlight();
+        }, 500);
+      }
+    });
+
+    var selector = 'table.issues .due_date';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
+    addAlternateCellContent(selector, 'verbalDate', createVerbalDate);
+    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
+
+    selector = 'table.issues .updated_on';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
+    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
+
+    selector = 'table.issues td.status';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
+    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+
+    // header links
+    $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
+
+    // experimental
+    var usedLanguage = assessUsedLanguage();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+/* working with alternate contents */
+
+function setDefaultCellContentDataAttribute(cells) {
+  $(cells).each(function() {
+    $(this).data('VAL' + 'defaultValue', $(this).text());
+    $(this).attr('title', $(this).text());
+    $(this).data('currentlyViewed', 'defaultValue');
+  });
+
+  $(cells).click(function() {
+    toggleAlternateCellContents(cells);
+  });
+}
+
+function addAlternateCellContent(cells, valueName, procedure) {
+  $(cells).each(function() {
+    $(this).data('VAL' + valueName, procedure($(this).text()));
+  });
+}
+
+function showAlternateCellContent(cells, valueName) {
+  $(cells).each(function() {
+    $(this).html($(this).data('VAL' + valueName));
+    $(this).data('currentlyViewed', valueName);
+  });
+
+  $.cookie(cells, valueName, { expires: 7 });
+}
+
+function toggleAlternateCellContents(cells) {
+  cell = $(cells).first();
+
+  var data = cell.data();
+  var variants = [];
+  for (var param in data) {
+    if (param.indexOf('VAL') === 0) variants.push(param.substring(3));
+  }
+
+  console.log(cell.data('currentlyViewed'));
+
+  currentViewPosition = $.inArray(cell.data('currentlyViewed'), variants);
+  nextViewPosition = (currentViewPosition < variants.length - 1) ? currentViewPosition + 1 : 0;
+  showAlternateCellContent(cells, variants[nextViewPosition]);
+}
+
+
+
+
+// table cell alternate content creators
+
+var statusReplacements = {
+  'Nový / New' : ['file'],
+  'Přiřazený / Assigned' : ['user'],
+  'Vyřešený / Solved' : ['ok'],
+  'Feedback' : ['comment'],
+  'Čeká se / Waiting' : ['refresh'],
+  'Odložený / Postponed' : ['stop'],
+  'Čeká na klienta' : ['eye-open'],
+  'Uzavřený / Closed' : ['home'],
+  'Odmítnutý / Rejected' : ['ban-circle'],
+  'Needs explanation' : ['question-sign'],
+  'Needs design' : ['picture'],
+  'Refused' : ['ban-circle'],
+  'Needs estimation' : ['time'],
+  'Needs estimation approval' : ['time', 'ok-sign'],
+  'Needs implementation' : ['thumbs-up'],
+  'Needs code review' : ['th-list'],
+  'Needs deployment' : ['upload'],
+  'Needs review' : ['eye-open'],
+  'Closed' : ['home']
+};
+
+function createStatusIcon(value) {
+  replacementCell = '';
+
+  for (var i = 0; i < statusReplacements[value].length; i++) {
+    replacementCell += '<i class="bootstrap-icon-'+statusReplacements[value][i]+'"></i>';
+  }
+
+  return replacementCell;
+}
+
+
+var weekday = new Array(7);
+weekday[0] = "Sunday";
+weekday[1] = "Monday";
+weekday[2] = "Tuesday";
+weekday[3] = "Wednesday";
+weekday[4] = "Thursday";
+weekday[5] = "Friday";
+weekday[6] = "Saturday";
+
+function createVerbalDate(value) {
+  if (!value) return '';
+  else {
+      var date = dateFromRedmineString(value);
+      var daysCount = daysFromToday(date);
+      var textualDueDate = '';
+
+      switch (daysCount) {
+        case 0:
+          textualDueDate = 'Today';
+          break;
+        case -1:
+          textualDueDate = 'Yesterday';
+          break;
+        case 1:
+          textualDueDate = 'Tomorrow';
+          break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          textualDueDate = weekday[date.getDay()].substring(0,3) + ' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.';
+          break;
+        default:
+          textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
+      }
+
+      return textualDueDate;
+  }
+}
+
+function createRelativeTime(value) {
+  if (!value) return '';
+  var date = dateFromRedmineString(value);
+  return date.toRelativeTime(new Date(), 5000, true);
+}
+
+
+
+
+
+
+
+
+
+function dateFromRedmineString(issueDate) {
+  issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
+
+  var year = issueDateArray[0];
+  var month = issueDateArray[1]-1;
+  var day = issueDateArray[2];
+  var minutes = issueDateArray[3] ? issueDateArray[3] : 0;
+  var seconds = issueDateArray[4] ? issueDateArray[4] : 0;
+
+  return new Date(year, month, day, minutes, seconds);
+}
+
+function assessUsedLanguage() {
+  var homeLinkText = $('#top-menu a.home').text();
+  if (homeLinkText == 'Úvodní') {
+    return 'cs';
+  } else return 'en';
+}
+
+//http://stackoverflow.com/questions/2627473/how-to-calculate-the-number-of-days-between-two-dates-using-javascript
+function daysFromToday(date) {
+
+    // The number of milliseconds in one day
+    var ONE_DAY = 1000 * 60 * 60 * 24;
+
+    // Convert both dates to milliseconds
+    var date1_ms = (new Date()).getTime();
+    var date2_ms = date.getTime();
+
+    // Calculate the difference in milliseconds
+    var difference_ms = date2_ms - date1_ms;
+
+    // Convert back to days and return
+    return Math.round(difference_ms/ONE_DAY) + 1;
+
+}
+
+
+//http://stackoverflow.com/questions/848797/yellow-fade-effect-with-jquery/13106698#13106698
+jQuery.fn.highlight = function () {
+    $(this).each(function () {
+        var el = $(this);
+        $("<div/>")
+        .width(el.outerWidth())
+        .height(el.outerHeight())
+        .css({
+            "position": "absolute",
+            "left": el.offset().left,
+            "top": el.offset().top,
+            "background-color": "#ffff99",
+            "opacity": ".7",
+            "z-index": "9999999"
+        }).appendTo('body').fadeOut(1500).queue(function () { $(this).remove(); });
+    });
+};
+
 // JavaScript Relative Time Helpers
 // The MIT License
 // Copyright (c) 2009 James F. Herdman
@@ -210,227 +467,3 @@ Date.fromString = function(str) {
   };
 
 })(jQuery, document);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Template code
-
-$(document).ready(function() {
-
-    //set closing time automatically on baufinder
-    if ($('#issue_custom_field_values_24').size() > 0) {
-      $('select#issue_status_id').change(function() {
-        if ($(this).val() == 17) {
-          var date = new Date();
-          $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
-        }
-      });
-    }
-
-    var selector = 'table.issues .due_date';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'VALrelativeTime', createRelativeTime);
-    addAlternateCellContent(selector, 'VALverbalDate', createVerbalDate);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'VALrelativeTime');
-
-    selector = 'table.issues .updated_on';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'VALrelativeTime', createRelativeTime);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'VALrelativeTime');
-
-    selector = 'table.issues td.status';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'VALstatusIcon', createStatusIcon);
-    if ($.cookie(selector) == 'VALstatusIcon') showAlternateCellContent(selector, 'VALstatusIcon');
-
-
-    // header links
-    $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-/* working with alternate contents */
-
-function setDefaultCellContentDataAttribute(cells) {
-  $(cells).each(function() {
-    $(this).data('VALdefaultValue', $(this).text());
-    $(this).attr('title', $(this).text());
-    $(this).data('currentlyViewed', 'VALdefaultValue');
-  });
-
-  $(cells).click(function() {
-    toggleAlternateCellContents(cells);
-  });
-}
-
-function addAlternateCellContent(cells, valueName, procedure) {
-  $(cells).each(function() {
-    $(this).data(valueName, procedure($(this).text()));
-  });
-}
-
-function showAlternateCellContent(cells, valueName) {
-  $(cells).each(function() {
-    $(this).html($(this).data(valueName));
-    $(this).data('currentlyViewed', valueName);
-  });
-
-  $.cookie(cells, valueName, { expires: 7 });
-}
-
-function toggleAlternateCellContents(cells) {
-  cell = $(cells).first();
-
-  var data = cell.data();
-  var variants = [];
-  for (var param in data) {
-    if (param.indexOf('VAL') === 0) variants.push(param);
-  }
-
-  currentViewPosition = $.inArray(cell.data('currentlyViewed'), variants);
-  nextViewPosition = (currentViewPosition < variants.length - 1) ? currentViewPosition + 1 : 0;
-  showAlternateCellContent(cells, variants[nextViewPosition]);
-}
-
-
-
-var statusReplacements = {
-  'Nový / New' : ['file'],
-  'Přiřazený / Assigned' : ['user'],
-  'Vyřešený / Solved' : ['ok'],
-  'Feedback' : ['comment'],
-  'Čeká se / Waiting' : ['refresh'],
-  'Odložený / Postponed' : ['stop'],
-  'Čeká na klienta' : ['eye-open'],
-  'Uzavřený / Closed' : ['home'],
-  'Odmítnutý / Rejected' : ['ban-circle'],
-  'Needs explanation' : ['question-sign'],
-  'Needs design' : ['picture'],
-  'Refused' : ['ban-circle'],
-  'Needs estimation' : ['time'],
-  'Needs estimation approval' : ['time', 'ok-sign'],
-  'Needs implementation' : ['thumbs-up'],
-  'Needs code review' : ['th-list'],
-  'Needs deployment' : ['upload'],
-  'Needs review' : ['eye-open'],
-  'Closed' : ['home']
-};
-
-function createStatusIcon(value) {
-  replacementCell = '';
-
-  for (var i = 0; i < statusReplacements[value].length; i++) {
-    replacementCell += '<i class="bootstrap-icon-'+statusReplacements[value][i]+'"></i>';
-  }
-
-  return replacementCell;
-}
-
-
-var weekday = new Array(7);
-weekday[0] = "Sunday";
-weekday[1] = "Monday";
-weekday[2] = "Tuesday";
-weekday[3] = "Wednesday";
-weekday[4] = "Thursday";
-weekday[5] = "Friday";
-weekday[6] = "Saturday";
-
-function createVerbalDate(value) {
-  if (!value) return '';
-  else {
-      var date = dateFromRedmineString(value);
-      var daysCount = daysFromToday(date);
-      var textualDueDate = '';
-
-      switch (daysCount) {
-        case 0:
-          textualDueDate = 'Today';
-          break;
-        case -1:
-          textualDueDate = 'Yesterday';
-          break;
-        case 1:
-          textualDueDate = 'Tommorow';
-          break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-          textualDueDate = weekday[date.getDay()];
-          break;
-        default:
-          textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
-      }
-
-      return textualDueDate;
-  }
-}
-
-function createRelativeTime(value) {
-  if (!value) return '';
-  var date = dateFromRedmineString(value);
-  return date.toRelativeTime(new Date(), 5000, true);
-}
-
-function dateFromRedmineString(issueDate) {
-  issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
-
-  var year = issueDateArray[0];
-  var month = issueDateArray[1]-1;
-  var day = issueDateArray[2];
-  var minutes = issueDateArray[3] ? issueDateArray[3] : 0;
-  var seconds = issueDateArray[4] ? issueDateArray[4] : 0;
-
-  return new Date(year, month, day, minutes, seconds);
-}
-
-
-//http://stackoverflow.com/questions/2627473/how-to-calculate-the-number-of-days-between-two-dates-using-javascript
-function daysFromToday(date) {
-
-    // The number of milliseconds in one day
-    var ONE_DAY = 1000 * 60 * 60 * 24;
-
-    // Convert both dates to milliseconds
-    var date1_ms = (new Date()).getTime();
-    var date2_ms = date.getTime();
-
-    // Calculate the difference in milliseconds
-    var difference_ms = date2_ms - date1_ms;
-
-    // Convert back to days and return
-    return Math.round(difference_ms/ONE_DAY) + 1;
-
-}
