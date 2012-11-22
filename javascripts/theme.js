@@ -2,10 +2,10 @@
 
 $(document).ready(function() {
 
-    //set closing time automatically on baufinder – temporary solution with timeout
+    //set closing time automatically on baufinder - temporary solution with timeout
     if ($('#issue_custom_field_values_24').size() > 0) {
       $('#all_attributes').on('change', 'select#issue_status_id', function() {
-        if ($('select#issue_status_id').val() == 17) { // Closed (on baufinder)
+        if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
           setTimeout(function() {
             var date = new Date();
             $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
@@ -62,7 +62,6 @@ $(document).ready(function() {
 
 
 /* working with alternate contents */
-
 function setDefaultCellContentDataAttribute(cells) {
   $(cells).each(function() {
     $(this).data('VAL' + 'defaultValue', $(this).text());
