@@ -2,27 +2,22 @@
 
 $(document).ready(function() {
 
-    //set closing time automatically on baufinder - temporary solution with timeout
-    if ($('#issue_custom_field_values_24').size() > 0) {
-      $('#all_attributes').on('change', 'select#issue_status_id', function() {
-        if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
-          setTimeout(function() {
-            var date = new Date();
-            $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
-            $('#issue_custom_field_values_24').highlight();
-          }, 500);
-        }
-      });
-    }
+    // return closed ticket to its author ans set closing time automatically where possible
+    // not really elegant solution with timeout, may fail when ajax request is not fast enough
 
-    // return closed ticket to its author - temporary solution with timeout
     $('#all_attributes').on('change','select#issue_status_id',  function() {
-      if ($(this).val() == 5) { // Uzavreny / Closed
+      if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
         var author = $('p.author a').first().attr('href').substring(7);
 
         setTimeout(function() {
           $('select#issue_assigned_to_id').val(author);
-          $('select#issue_assigned_to_id').highlight();
+          $('select#issue_assigned_to_id').parent().highlight();
+
+          if ($('#issue_custom_field_values_24').size() > 0) {
+              var date = new Date();
+              $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
+              $('#issue_custom_field_values_24').parent().highlight();
+          }
         }, 500);
       }
     });
@@ -43,6 +38,25 @@ $(document).ready(function() {
     addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
     if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
 
+    // toggle sidebar visibility
+    $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
+
+    var urlHash = window.location.href.hashCode();
+    if ($.cookie('sidebarHidden.' + urlHash)) {
+      hideSidebar();
+      $.cookie('sidebarHidden.' + urlHash, true, { expires: 5 }); //extend expiration
+    }
+
+    $('button.toggleSidebar').click(function () {
+      if ($('#sidebar').is(':visible')) {
+        hideSidebar();
+        $.cookie('sidebarHidden.' + urlHash, true, { expires: 5 });
+      } else {
+        showSidebar();
+        $.removeCookie('sidebarHidden.' + urlHash);
+      }
+    });
+
     // header links
     $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
 
@@ -52,14 +66,17 @@ $(document).ready(function() {
 
 
 
-
-
-
-
-
-
-
-
+/* sidebar toggling */
+function showSidebar() {
+  $('#sidebar').show();
+  $('button.toggleSidebar').html('&times;');
+  $('#main').removeClass('nosidebar');
+}
+function hideSidebar() {
+  $('#sidebar').hide();
+  $('button.toggleSidebar').html('&larr;');
+  $('#main').addClass('nosidebar');
+}
 
 /* working with alternate contents */
 function setDefaultCellContentDataAttribute(cells) {
@@ -215,6 +232,18 @@ function assessUsedLanguage() {
   } else return 'en';
 }
 
+//http://stackoverflow.com/a/7616484
+String.prototype.hashCode = function(){
+    var hash = 0, i, char;
+    if (this.length == 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+};
+
 //http://stackoverflow.com/questions/2627473/how-to-calculate-the-number-of-days-between-two-dates-using-javascript
 function daysFromToday(date) {
 
@@ -238,7 +267,7 @@ function daysFromToday(date) {
 jQuery.fn.highlight = function () {
     $(this).each(function () {
         var el = $(this);
-        $("<div/>")
+        var fadingEl = $("<div/>")
         .width(el.outerWidth())
         .height(el.outerHeight())
         .css({
@@ -248,7 +277,13 @@ jQuery.fn.highlight = function () {
             "background-color": "#ffff99",
             "opacity": ".7",
             "z-index": "9999999"
-        }).appendTo('body').fadeOut(1500).queue(function () { $(this).remove(); });
+        }).appendTo('body');
+
+        setTimeout(function () {
+          fadingEl.fadeOut(1500).queue(function () {
+            fadingEl.remove();
+          });
+        }, 1000);
     });
 };
 

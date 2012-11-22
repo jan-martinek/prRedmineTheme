@@ -54,6 +54,31 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 	}
 }
 
+#main {
+	position: relative;
+}
+
+button.toggleSidebar {
+	position: absolute;
+	top: 10px; right: 10px;
+	z-index: 10;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 20px;
+	color: #000000;
+	text-shadow: 0 1px 0 #ffffff;
+	opacity: 0.2;
+	filter: alpha(opacity=20);
+
+	padding: 0;
+	margin: -10px -5px 0 0;
+
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	-webkit-appearance: none;
+}
+
 
 /* Tables */
 table.list tbody td, table.list tbody tr:hover td { border: solid 1px #eee; }
