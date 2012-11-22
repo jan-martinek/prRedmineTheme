@@ -39,7 +39,9 @@ $(document).ready(function() {
     if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
 
     // toggle sidebar visibility
-    $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
+    if ($('#sidebar').children().length > 0) {
+      $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
+    }
 
     var urlHash = window.location.href.hashCode();
     if ($.cookie('sidebarHidden.' + urlHash)) {
