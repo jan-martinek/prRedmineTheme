@@ -71,7 +71,7 @@ $(document).ready(function() {
 
 
       if ($.cookie('issueAttributesMinimized')) { $('.issueAttributes button.minimize').click(); }
-      if ($.cookie('timeLoggingMinimized')) { $('.timeLoggingAttributes button.minimize').click(); }
+      if ($.cookie('timeLoggingMinimized')) { $('.timeLogging button.minimize').click(); }
       e.preventDefault();
     });
 
@@ -79,25 +79,25 @@ $(document).ready(function() {
     var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
     var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
     var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
-    issueAttributes.prepend('<button class="minimize">minimize</button>');
+    issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
     $('.issueAttributes button.minimize').click(function() {
       toggleFormElements(
         'issueAttributes',
-        ['#issue_project_id', '#issue_tracker_id', '#issue_subject',
+        ['#issue_project_id', '#issue_tracker_id', '#issue_subject', '#issue_is_private',
         '#issue_description_and_toolbar', '#issue_parent_issue_id', '#issue_start_date',
         '#issue_estimated_hours', '#issue_done_ratio'],
         $(this),
-        ['minimize', 'maximize']);
+        ['<i class="bootstrap-icon-minus"></i>', '<i class="bootstrap-icon-plus"></i>']);
       return false;
     });
 
-    timeLogging.prepend('<button class="minimize">hide</button>');
+    timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
     $('.timeLogging button.minimize').click(function() {
       toggleFormElements(
         'timeLogging',
         ['#time_entry_hours', '#time_entry_activity_id', '#time_entry_comments'],
         $(this),
-        ['hide', 'show']);
+        ['<i class="bootstrap-icon-minus"></i>', '<i class="bootstrap-icon-plus"></i>']);
       return false;
     });
 
