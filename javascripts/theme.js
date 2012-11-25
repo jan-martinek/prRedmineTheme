@@ -62,6 +62,45 @@ $(document).ready(function() {
     // header links
     $('#header h1').prepend('<a class="go-to-my-issues" href="/issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
 
+    // better functioning update, mainly on mobile
+    $('.icon-edit[onclick="showAndScrollTo("update", "notes"); return false;"]').addClass('updateButton').attr('onclick', '');
+    $('.updateButton').click(function(e) {
+      $('#update').show();
+      $('#notes').focus();
+      $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
+
+
+      if ($.cookie('issueAttributesMinimized')) { $('.issueAttributes button.minimize').click(); }
+      if ($.cookie('timeLoggingMinimized')) { $('.timeLoggingAttributes button.minimize').click(); }
+      e.preventDefault();
+    });
+
+    //leaner update form - temporary dirty implementation
+    var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
+    var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
+    var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
+    issueAttributes.prepend('<button class="minimize">minimize</button>');
+    $('.issueAttributes button.minimize').click(function() {
+      toggleFormElements(
+        'issueAttributes',
+        ['#issue_project_id', '#issue_tracker_id', '#issue_subject',
+        '#issue_description_and_toolbar', '#issue_parent_issue_id', '#issue_start_date',
+        '#issue_estimated_hours', '#issue_done_ratio'],
+        $(this),
+        ['minimize', 'maximize']);
+      return false;
+    });
+
+    timeLogging.prepend('<button class="minimize">hide</button>');
+    $('.timeLogging button.minimize').click(function() {
+      toggleFormElements(
+        'timeLogging',
+        ['#time_entry_hours', '#time_entry_activity_id', '#time_entry_comments'],
+        $(this),
+        ['hide', 'show']);
+      return false;
+    });
+
     // experimental
     var usedLanguage = assessUsedLanguage();
 });
@@ -207,7 +246,34 @@ function createRelativeTime(value) {
   return date.toRelativeTime(new Date(), 5000, true);
 }
 
+function hideFormElement(id) {
+  $(id).closest('p').hide();
+}
+function hideFormElements(ids) {
+  $.each(ids, function(index, value) {
+    hideFormElement(value);
+  });
+}
+function showFormElement(id) {
+  $(id).closest('p').show();
+}
+function showFormElements(ids) {
+  $.each(ids, function(index, value) {
+    showFormElement(value);
+  });
+}
+function toggleFormElements(groupName, ids, button, buttonStates) {
+  if ($(ids[0]).closest('p').is(':visible')) {
+    hideFormElements(ids);
+    button.html(buttonStates[1]);
+    $.cookie(groupName + 'Minimized', true, { expires: 7, path: '/' });
+  } else {
+    showFormElements(ids);
+    button.html(buttonStates[0]);
+    $.removeCookie(groupName + 'Minimized', { expires: 7, path: '/' });
 
+  }
+}
 
 
 

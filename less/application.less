@@ -43,9 +43,13 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 		padding: 7px;
 		padding-left: 28px;
 
-		i:last-child {
+		i {
 			font-weight: bold;
 			font-style: normal;
+			color: #888;
+		}
+		i:last-child {
+			color: black;
 		}
 		strong {
 			font-weight: normal;
@@ -54,11 +58,24 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 	}
 }
 
-#main {
+#main, .issueAttributes, .timeLogging {
 	position: relative;
 }
 
-button.toggleSidebar {
+form {
+	fieldset {
+		border: 0;
+		background: #f8f8f8;
+
+		legend {
+		}
+	}
+	.splitcontentleft, .splitcontentright {
+		margin-bottom: 5px !important;
+	}
+}
+
+button.toggleSidebar, button.minimize {
 	position: absolute;
 	top: 10px; right: 10px;
 	z-index: 10;
@@ -215,3 +232,11 @@ div.issue { border: 0; padding: 15px; }
 	width: 125px; margin-right: 10px;
 	text-indent: -9999px;
 }
+
+
+/* mobile - experimental */
+/* @media screen and (max-width: 480px) {
+	textarea {
+		max-width: 460px;
+	}
+} */
