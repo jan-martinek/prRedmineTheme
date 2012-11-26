@@ -28,15 +28,22 @@ $(document).ready(function() {
     addAlternateCellContent(selector, 'verbalDate', createVerbalDate);
     showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
 
-    selector = 'table.issues .updated_on';
+    selector = 'table.issues .tracker';
+    $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
     setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
+    addAlternateCellContent(selector, 'shortIssueType', createShortIssueType);
+    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'shortIssueType');
 
     selector = 'table.issues td.status';
     setDefaultCellContentDataAttribute(selector);
     addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
     if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+
+    selector = 'table.issues td.status';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
+    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+
 
     // toggle sidebar visibility
     if ($('#sidebar').children().length > 0) {
@@ -69,9 +76,15 @@ $(document).ready(function() {
       $('#notes').focus();
       $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
 
-
-      if ($.cookie('issueAttributesMinimized')) { $('.issueAttributes button.minimize').click(); }
-      if ($.cookie('timeLoggingMinimized')) { $('.timeLogging button.minimize').click(); }
+      // leaner update form cookie init
+      if ($.cookie('issueAttributesMinimized')) {
+        $('.issueAttributes button.minimize').click();
+        $.cookie('issueAttributesMinimized', true, { expires: 7, path: '/' }); // renew expiration
+      }
+      if ($.cookie('timeLoggingMinimized')) {
+        $('.timeLogging button.minimize').click();
+        $.cookie('timeLoggingMinimized', true, { expires: 7, path: '/' }); // renew expiration
+      }
       e.preventDefault();
     });
 
@@ -161,11 +174,13 @@ function toggleAlternateCellContents(cells) {
   showAlternateCellContent(cells, variants[nextViewPosition]);
 }
 
-
-
+function createShortIssueType(value) {
+  if (value == 'Požadavek') return '<span style="opacity:.4">&fnof;</span>';
+  if (value == 'Feature Request') return '<span style="opacity:.4">&fnof;</span>';
+  else return value;
+}
 
 // table cell alternate content creators
-
 var statusReplacements = {
   'Nový / New' : ['file'],
   'Přiřazený / Assigned' : ['user'],
