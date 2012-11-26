@@ -98,7 +98,8 @@ $(document).ready(function() {
         'issueAttributes',
         ['#issue_project_id', '#issue_tracker_id', '#issue_subject', '#issue_is_private',
         '#issue_description_and_toolbar', '#issue_parent_issue_id', '#issue_start_date',
-        '#issue_estimated_hours', '#issue_done_ratio'],
+        '#issue_estimated_hours', '#issue_done_ratio', '#issue_category_id', '#issue_fixed_version_id',
+        '#issue_custom_field_values_13'],
         $(this),
         ['<i class="bootstrap-icon-minus"></i>', '<i class="bootstrap-icon-plus"></i>']);
       return false;
