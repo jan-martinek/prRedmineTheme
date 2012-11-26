@@ -28,21 +28,21 @@ $(document).ready(function() {
     addAlternateCellContent(selector, 'verbalDate', createVerbalDate);
     showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
 
+    selector = 'table.issues .updated_on';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
+    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
+
+    selector = 'table.issues td.status';
+    setDefaultCellContentDataAttribute(selector);
+    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
+    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+
     selector = 'table.issues .tracker';
-    $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
     setDefaultCellContentDataAttribute(selector);
     addAlternateCellContent(selector, 'shortIssueType', createShortIssueType);
     showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'shortIssueType');
-
-    selector = 'table.issues td.status';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
-    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
-
-    selector = 'table.issues td.status';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
-    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+    $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
 
 
     // toggle sidebar visibility
@@ -174,36 +174,31 @@ function toggleAlternateCellContents(cells) {
   showAlternateCellContent(cells, variants[nextViewPosition]);
 }
 
-function createShortIssueType(value) {
-  if (value == 'Požadavek') return '<span style="opacity:.4">&fnof;</span>';
-  if (value == 'Feature Request') return '<span style="opacity:.4">&fnof;</span>';
-  else return value;
-}
-
-// table cell alternate content creators
-var statusReplacements = {
-  'Nový / New' : ['file'],
-  'Přiřazený / Assigned' : ['user'],
-  'Vyřešený / Solved' : ['ok'],
-  'Feedback' : ['comment'],
-  'Čeká se / Waiting' : ['refresh'],
-  'Odložený / Postponed' : ['stop'],
-  'Čeká na klienta' : ['eye-open'],
-  'Uzavřený / Closed' : ['home'],
-  'Odmítnutý / Rejected' : ['ban-circle'],
-  'Needs explanation' : ['question-sign'],
-  'Needs design' : ['picture'],
-  'Refused' : ['ban-circle'],
-  'Needs estimation' : ['time'],
-  'Needs estimation approval' : ['time', 'ok-sign'],
-  'Needs implementation' : ['thumbs-up'],
-  'Needs code review' : ['th-list'],
-  'Needs deployment' : ['upload'],
-  'Needs review' : ['eye-open'],
-  'Closed' : ['home']
-};
 
 function createStatusIcon(value) {
+  // table cell alternate content creators
+  var statusReplacements = {
+    'Nový / New' : ['file'],
+    'Přiřazený / Assigned' : ['user'],
+    'Vyřešený / Solved' : ['ok'],
+    'Feedback' : ['comment'],
+    'Čeká se / Waiting' : ['refresh'],
+    'Odložený / Postponed' : ['stop'],
+    'Čeká na klienta' : ['eye-open'],
+    'Uzavřený / Closed' : ['home'],
+    'Odmítnutý / Rejected' : ['ban-circle'],
+    'Needs explanation' : ['question-sign'],
+    'Needs design' : ['picture'],
+    'Refused' : ['ban-circle'],
+    'Needs estimation' : ['time'],
+    'Needs estimation approval' : ['time', 'ok-sign'],
+    'Needs implementation' : ['thumbs-up'],
+    'Needs code review' : ['th-list'],
+    'Needs deployment' : ['upload'],
+    'Needs review' : ['eye-open'],
+    'Closed' : ['home']
+  };
+  
   replacementCell = '';
 
   for (var i = 0; i < statusReplacements[value].length; i++) {
@@ -261,6 +256,14 @@ function createRelativeTime(value) {
   return date.toRelativeTime(new Date(), 5000, true);
 }
 
+function createShortIssueType(value) {
+  if (value == 'Požadavek') { return '<span style="opacity:.4">&fnof;</span>'; }
+  if (value == 'Feature Request') { return '<span style="opacity:.4">&fnof;</span>'; }
+  else { return value; }
+}
+
+
+/* hiding elements in a form - all are embedded in a paragraph */
 function hideFormElement(id) {
   $(id).closest('p').hide();
 }
