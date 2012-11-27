@@ -6,13 +6,16 @@ $(document).ready(function() {
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
 
     $('#all_attributes').on('change','select#issue_status_id',  function() {
-      if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
+      if ($(this).val() == 3) { // Solved
         var author = $('p.author a').first().attr('href').substring(7);
-
         setTimeout(function() {
           $('select#issue_assigned_to_id').val(author);
           $('select#issue_assigned_to_id').parent().highlight();
+        }, 500);
+      }
 
+      if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
+        setTimeout(function() {
           if ($('#issue_custom_field_values_24').size() > 0) {
               var date = new Date();
               $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
