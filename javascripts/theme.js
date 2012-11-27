@@ -95,26 +95,16 @@ $(document).ready(function() {
     var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
     var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
     var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
+
     issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
     $('.issueAttributes button.minimize').click(function() {
-      toggleFormElements(
-        'issueAttributes',
-        ['#issue_project_id', '#issue_tracker_id', '#issue_subject', '#issue_is_private',
-        '#issue_description_and_toolbar', '#issue_parent_issue_id', '#issue_start_date',
-        '#issue_estimated_hours', '#issue_done_ratio', '#issue_category_id', '#issue_fixed_version_id',
-        '#issue_custom_field_values_13'],
-        $(this),
-        ['<i class="bootstrap-icon-minus"></i>', '<i class="bootstrap-icon-plus"></i>']);
+      toggleFormFolding('issueAttributes', $(this));
       return false;
     });
 
     timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
     $('.timeLogging button.minimize').click(function() {
-      toggleFormElements(
-        'timeLogging',
-        ['#time_entry_hours', '#time_entry_activity_id', '#time_entry_comments'],
-        $(this),
-        ['<i class="bootstrap-icon-minus"></i>', '<i class="bootstrap-icon-plus"></i>']);
+      toggleFormFolding('timeLogging', $(this));
       return false;
     });
 
@@ -268,7 +258,7 @@ function createShortIssueType(value) {
 
 
 /* hiding elements in a form - all are embedded in a paragraph */
-function hideFormElement(id) {
+/*function hideFormElement(id) {
   $(id).closest('p').hide();
 }
 function hideFormElements(ids) {
@@ -294,6 +284,17 @@ function toggleFormElements(groupName, ids, button, buttonStates) {
     button.html(buttonStates[0]);
     $.removeCookie(groupName + 'Minimized', { expires: 7, path: '/' });
 
+  }
+}*/
+function toggleFormFolding(groupName, button, buttonStates) {
+  if (!$('#update').hasClass(groupName + 'Minimized')) {
+    $('#update').addClass(groupName + 'Minimized');
+    button.html('<i class="bootstrap-icon-plus"></i>');
+    $.cookie(groupName + 'Minimized', true, { expires: 7, path: '/' });
+  } else {
+    $('#update').removeClass(groupName + 'Minimized');
+    button.html('<i class="bootstrap-icon-minus"></i>');
+    $.removeCookie(groupName + 'Minimized', { expires: 7, path: '/' });
   }
 }
 

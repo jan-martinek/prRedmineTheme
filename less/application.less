@@ -96,6 +96,50 @@ form {
 	}
 }
 
+/* optionally hidden elements */
+#update {
+	&.issueAttributesMinimized {
+	    .box {
+	    	fieldset:nth-child(1) {
+	    		#all_attributes {
+	    			& > p { display: none; } // everything
+	    			#attributes {
+	    				.splitcontent:nth-child(1) {
+	    					.splitcontentleft {
+	    						p:nth-child(4), // category
+	    						p:nth-child(5) // target version
+	    						{
+	    							display: none;
+	    						}
+	    					}
+		    				.splitcontentright {
+		    					p:nth-child(1), // parent task
+		    					p:nth-child(3), // start date
+		    					p:nth-child(5), // estimated time
+		    					p:nth-child(6) // % done
+		    					{
+		    						display: none;
+		    					}
+		    				}
+		    			}
+		    			.splitcontent:nth-child(2) .splitcontentleft > * {
+		    				display: none; //billedToClient
+		    			}
+	    			}
+	    		}
+	    	}
+	    }
+	}
+	&.timeLoggingMinimized {
+		.box fieldset:nth-child(2) {
+			& > div, & > p { // everything
+				display: none;
+			}
+		}
+	}
+}
+
+
 button.toggleSidebar, button.minimize {
 	position: absolute;
 	top: 10px; right: 10px;
