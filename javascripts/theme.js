@@ -18,7 +18,7 @@ $(document).ready(function() {
         setTimeout(function() {
           if ($('#issue_custom_field_values_24').size() > 0) {
               var date = new Date();
-              $('#issue_custom_field_values_24').val(date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
+              $('#issue_custom_field_values_24').val(date.yyyymmdd());
               $('#issue_custom_field_values_24').parent().highlight();
           }
         }, 500);
@@ -322,6 +322,15 @@ function assessUsedLanguage() {
     return 'cs';
   } else return 'en';
 }
+
+
+// http://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+Date.prototype.yyyymmdd = function() {
+   var yyyy = this.getFullYear().toString();
+   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = this.getDate().toString();
+   return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]); // padding
+  };
 
 //http://stackoverflow.com/a/7616484
 String.prototype.hashCode = function(){
