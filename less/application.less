@@ -30,10 +30,21 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 }
 
 /* Menu */
-#main-menu { left: 20px; bottom: -25px; }
-#main-menu li a { color: rgba(255, 255, 255, .7); background-color: #182f3c + #111; border-radius: 2px 2px 0 0; font-weight: bold;}
-#main-menu li a:hover { background: #5fbaed - #222; text-decoration: underline; }
-#main-menu li a.selected, #main-menu li a.selected:hover { background-color: white; }
+#main-menu {
+  left: 20px;
+  bottom: -25px;
+
+  li a {
+    color: rgba(255, 255, 255, .7);
+    background-color: #182f3c + #111;
+    border-radius: 2px 2px 0 0;
+    font-weight: bold;
+    padding: 6px 10px;
+  }
+
+  li a:hover { background: #5fbaed - #222; text-decoration: underline; }
+  li a.selected, #main-menu li a.selected:hover { background-color: white; }
+}
 
 #history .journal {
 	margin-bottom: 30px;
