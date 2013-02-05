@@ -108,6 +108,30 @@ $(document).ready(function() {
       return false;
     });
 
+    // fixed update textarea
+
+
+    $(window).scroll(function() {
+      var updateForm = $('#update');
+
+      if ($(updateForm).is(':visible')) {
+        var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
+        var range = textareaWrapper.offset().top + textareaWrapper.height();
+        var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
+
+        if (windowBottomScrollTop < range) {
+          textareaWrapper.find('textarea').css({width: textareaWrapper.find('textarea').width()+'px'});
+          updateForm.addClass('fixedTextarea');
+        } else {
+          textareaWrapper.find('textarea').css({width: '99%'});
+          $('#update.fixedTextarea').removeClass('fixedTextarea');
+        }
+      }
+
+    });
+
+
+
     // experimental
     var usedLanguage = assessUsedLanguage();
 });
@@ -192,7 +216,7 @@ function createStatusIcon(value) {
     'Needs review' : ['eye-open'],
     'Closed' : ['home']
   };
-  
+
   replacementCell = '';
 
   for (var i = 0; i < statusReplacements[value].length; i++) {

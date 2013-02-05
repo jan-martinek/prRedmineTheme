@@ -31,8 +31,8 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 
 /* Menu */
 #main-menu {
-  left: 20px;
-  bottom: -25px;
+	left: 20px;
+	bottom: -25px;
 
   li a {
     color: rgba(255, 255, 255, .7);
@@ -104,6 +104,18 @@ form {
 	}
 	.splitcontentleft, .splitcontentright {
 		margin-bottom: 10px !important;
+	}
+}
+
+/* fixed textarea */
+#update.fixedTextarea {
+	.jstEditor {
+		height: 173px;
+	}
+	textarea {
+		position: fixed;
+		height: 160px; width: 500px;
+		bottom: 10px; left: 45px;
 	}
 }
 
