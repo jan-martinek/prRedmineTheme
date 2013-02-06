@@ -398,6 +398,29 @@ div.issue { border: 0; padding: 15px; }
 	}
 }
 
+a#exitZenMode {
+	display: none;
+}
+
+body.zenMode {
+	#top-menu, #header {
+		display: none;
+	}
+	#main {
+		margin: 2px;
+		/*position: fixed;
+		z-index: 9999;
+		top: -22px; bottom: -22px;
+		left: -17px; right: -17px;
+		overflow: scroll; */
+		border-radius: 2px;
+
+		a#exitZenMode {
+			display: inline;
+		}
+	}
+}
+
 /* mobile - experimental */
 /* @media screen and (max-width: 480px) {
 	textarea {

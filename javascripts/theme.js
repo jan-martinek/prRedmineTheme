@@ -48,6 +48,21 @@ $(document).ready(function() {
     $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
 
 
+    // zen mode
+    $('<div id="enterZenMode" style="float: right"><a href="#">Zen mode</a></div>').insertBefore('#loggedas');
+    $('<a id="exitZenMode" href="#">&#9775; Exit zen</a>').appendTo('#main>#content>.contextual');
+
+    // toggle zen mode - cookie intentionally not implemented
+    $('body').on('click', '#enterZenMode', function() {
+      $('body').addClass('zenMode');
+      return false;
+    });
+    $('body').on('click', '#exitZenMode', function() {
+      $('body').removeClass('zenMode');
+      return false;
+    });
+
+
     // toggle sidebar visibility
     if ($('#sidebar').children().length > 0) {
       $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
