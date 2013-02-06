@@ -53,7 +53,7 @@ $(document).ready(function() {
       $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
     }
 
-    var urlHash = window.location.href.hashCode();
+    var urlHash = 'everywhere'; //disabled, hides sidebar on all pages - window.location.href.hashCode();
     if ($.cookie('sidebarHidden.' + urlHash)) {
       hideSidebar();
       $.cookie('sidebarHidden.' + urlHash, true, { expires: 5 }); //extend expiration
