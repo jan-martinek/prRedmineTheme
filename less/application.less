@@ -10,6 +10,7 @@ html, body, #wrapper { background-color: #112631; height: 100%; }
 	a:hover { color: white; }
 }
 #main { background: white; padding: 10px 0px; margin: 25px 20px; border-radius: 0 2px 2px 2px; }
+
 body.controller-welcome #main { border-radius: 2px; margin-top: 0px; }
 #content, #main.nosidebar #content { background: #fff; border: 0; padding-left: 15px; width: auto; padding-right: 300px; }
 #main.nosidebar #content { padding-right: 15px; }
@@ -29,7 +30,7 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 	color: #5fbaed;
 }
 
-textarea {
+textarea, textarea.wiki-edit {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -125,7 +126,23 @@ form {
 		display: none;
 	}
 
+	#update.fixedTextarea {
+		input[name="commit"] {
+			position: fixed;
+			bottom: 192px; left: 715px;
+
+		}
+	}
+
 	#update.fixedTextarea .issueJournalNotes {
+
+		.jstElements {
+			position: fixed;
+			height: 26px; width: 600px;
+			background: rgba(255, 255, 255, .9);
+			bottom: 190px; left: 75px;
+			padding: 2px 100px 2px 20px;
+		}
 
 		.jstEditor {
 			height: 173px;
@@ -144,7 +161,7 @@ form {
 			a.collapseTextarea {
 				display: block;
 				position: fixed;
-				bottom: 170px; left: 45px;
+				bottom: 190px; left: 45px;
 
 				background: #5fbaed;
 				color: white;
