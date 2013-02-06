@@ -29,6 +29,17 @@ h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
 	color: #5fbaed;
 }
 
+textarea {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	width: 100%;
+	padding: 10px !important;
+
+	color: #333;
+}
+
 /* Menu */
 #main-menu {
 	left: 20px;
@@ -110,19 +121,44 @@ form {
 /* fixed textarea */
 
 @media screen and (min-width: 768px) {
-	#update.fixedTextarea {
+	#update a.collapseTextarea {
+		display: none;
+	}
+
+	#update.fixedTextarea .issueJournalNotes {
+
 		.jstEditor {
 			height: 173px;
-		}
-		textarea {
-			position: fixed;
-			height: 160px; width: 500px;
-			bottom: 10px; left: 45px;
 
-			-webkit-box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
-			box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
+			textarea {
+				position: fixed;
+				height: 160px; width: 500px;
+				bottom: 10px; left: 45px;
 
-			z-index: 11;
+				-webkit-box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
+				box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
+
+				z-index: 11;
+			}
+
+			a.collapseTextarea {
+				display: block;
+				position: fixed;
+				bottom: 170px; left: 45px;
+
+				background: #5fbaed;
+				color: white;
+				text-decoration: none;
+				width: 30px; height: 30px;
+				line-height: 30px;
+				overflow: hidden;
+				text-align: center;
+				font-size: 15px;
+
+				&:hover {
+					background: #182f3c;
+				}
+			}
 		}
 	}
 }
@@ -253,16 +289,11 @@ input[type="button"], input[type="submit"], input[type="reset"] {
 input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover { background-color: #ccccbb; }
 
 /* Fields */
-input[type="text"], input[type="password"], textarea, select { padding: 2px; border: 1px solid #d7d7d7; font-size: 13px }
-input[type="text"], input[type="password"] { padding: 3px; }
+input[type="text"], input[type="password"], textarea, select { border: 1px solid #d7d7d7; font-size: 13px }
+input[type="text"], input[type="password"] { padding: 3px; padding: 2px; }
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus { border: 1px solid #888866; }
 input[type="file"]::-webkit-file-upload-button, button { font-size: 13px; }
 option { border-bottom: 1px dotted #d7d7d7; }
-
-textarea.wiki-edit {
-    color: #333;
-    padding: 0.5%;
-}
 
 /* Login */
 

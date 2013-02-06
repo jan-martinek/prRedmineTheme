@@ -111,25 +111,42 @@ $(document).ready(function() {
     // fixed update textarea
 
 
-    $(window).scroll(function() {
-      var updateForm = $('#update');
+    var updateForm = $('#update');
+    var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
+    var textarea = textareaWrapper.find('textarea');
 
+    textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
+    var collapseLink = $('.collapseTextarea');
+
+    collapseLink.click(function() {
+      if (textarea.height() > 100) {
+        collapseLink.css({bottom: '30px'}).html('&#x25B2;');
+        textarea.animate({height: '20px'}, 'fast');
+      } else {
+        collapseLink.css({bottom: ''}).html('&#x25BC;');
+        textarea.animate({height: '160px'}, 'fast');
+      }
+      return false;
+    });
+
+    $(window).scroll(function() {
       if ($(updateForm).is(':visible')) {
-        var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
         var range = textareaWrapper.offset().top + textareaWrapper.height();
         var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
 
-        if (windowBottomScrollTop < range) {
-          textareaWrapper.find('textarea').css({width: textareaWrapper.find('textarea').width()+'px'});
+        if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
+          textareaWrapper.css({'height': textarea.height() + 'px'});
+          textarea.css({width: textarea.width()+'px'});
+          collapseLink.css({bottom: ''}).html('&#x25BC;');
           updateForm.addClass('fixedTextarea');
-        } else {
-          textareaWrapper.find('textarea').css({width: '99%'});
+        } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
+          textareaWrapper.css({height: ''});
+          textarea.css({width: '', height: ''});
+          $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
           $('#update.fixedTextarea').removeClass('fixedTextarea');
         }
       }
-
     });
-
 
 
     // experimental
