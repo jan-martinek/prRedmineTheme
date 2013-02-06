@@ -120,8 +120,8 @@ $(document).ready(function() {
 
     collapseLink.click(function() {
       if (textarea.height() > 100) {
-        collapseLink.css({bottom: '30px'}).html('&#x25B2;');
-        textarea.animate({height: '20px'}, 'fast');
+        collapseLink.css({bottom: '50px'}).html('&#x25B2;');
+        textarea.animate({height: '40px'}, 'fast');
       } else {
         collapseLink.css({bottom: ''}).html('&#x25BC;');
         textarea.animate({height: '160px'}, 'fast');
