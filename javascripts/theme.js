@@ -2,6 +2,7 @@
 
 $(document).ready(function() {
     $userId = getUserId();
+    $issueId = getIssueId();
 
     // return closed ticket to its author ans set closing time automatically where possible
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
@@ -176,6 +177,24 @@ $(document).ready(function() {
     var usedLanguage = assessUsedLanguage();
 });
 
+
+function getIssueId() {
+  // get issue id
+  var issueId = 0;
+
+  //on issue page
+  if (matchPage('controller-issues', 'action-show')) {
+    issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
+  }
+
+  //on time log page
+  if (matchPage('controller-timelog', 'action-new')) {
+    issueId = /^.+issues\/([0-9]+)\/$/.exec($('input[name="back_url"]').attr('value')).pop();
+  }
+
+  console.log('issue id recognized: ' + issueId);
+  return issueId;
+}
 
 function getUserId() {
   var userId = /users\/([0-9]+)$/.exec($('#loggedas a').attr('href')).pop();
