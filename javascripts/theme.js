@@ -1,6 +1,7 @@
 // Template code
 
 $(document).ready(function() {
+    $userId = getUserId();
 
     // return closed ticket to its author ans set closing time automatically where possible
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
@@ -175,6 +176,13 @@ $(document).ready(function() {
     var usedLanguage = assessUsedLanguage();
 });
 
+
+function getUserId() {
+  var userId = /users\/([0-9]+)$/.exec($('#loggedas a').attr('href')).pop();
+  console.log('user id recognized: ' + userId);
+
+  return userId;
+}
 
 
 /* sidebar toggling */
