@@ -179,6 +179,16 @@ $(document).ready(function() {
 });
 
 
+/* page matching */
+function matchPage(controller, action) {
+  var body = $('body');
+
+  if (body.hasClass(controller) && body.hasClass(action)) {
+    return true;
+  }
+
+  return false;
+}
 function getProjectId() {
   // get issue id
   var projectId = 0;
