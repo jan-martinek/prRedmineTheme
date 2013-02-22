@@ -3,6 +3,7 @@
 $(document).ready(function() {
     $userId = getUserId();
     $issueId = getIssueId();
+    $projectId = getProjectId();
 
     // return closed ticket to its author ans set closing time automatically where possible
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
@@ -176,6 +177,25 @@ $(document).ready(function() {
     // experimental
     var usedLanguage = assessUsedLanguage();
 });
+
+
+function getProjectId() {
+  // get issue id
+  var projectId = 0;
+
+  //on issue page
+  if (matchPage('controller-issues', 'action-show')) {
+    projectId = $('#issue_project_id option[selected="selected"]').val();
+  }
+
+  //on time log page
+  if (matchPage('controller-timelog', 'action-new')) {
+    projectId = $('#time_entry_project_id').val();
+  }
+
+  console.log('project id recognized: ' + projectId);
+  return projectId;
+}
 
 
 function getIssueId() {
