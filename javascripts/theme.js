@@ -42,7 +42,9 @@ $(document).ready(function() {
     selector = 'table.issues td.status';
     setDefaultCellContentDataAttribute(selector);
     addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
-    if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
+    addAlternateCellContent(selector, 'newHighlighted', highlightNew);
+    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'newHighlighted');
+    //if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
 
     selector = 'table.issues .tracker';
     setDefaultCellContentDataAttribute(selector);
@@ -331,6 +333,12 @@ function createStatusIcon(value) {
   }
 
   return replacementCell;
+}
+
+function highlightNew(value) {
+  if (value == 'Nový / New') {
+    return '<b style="color: red">' + value + '</b>';
+  } else return value;
 }
 
 
