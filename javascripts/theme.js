@@ -173,6 +173,17 @@ $(document).ready(function() {
       });
     }
 
+    if (false) {
+      var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 400px" src="http://timey.eu01.aws.af.cm/?redmine[project_id]='+$projectId+'&redmine[issue_id]='+$issueId+'"></iframe></div>';
+      if (matchPage('controller-timelog', 'action-new')) {
+        $('#new_time_entry').after(timeyLogger);
+        $('#new_time_entry').hide();
+      }
+      if (matchPage('controller-issues', 'action-show')) {
+        $('.tabular.timeLogging').append(timeyLogger);
+        $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
+      }
+    }
 
     // experimental
     var usedLanguage = assessUsedLanguage();
