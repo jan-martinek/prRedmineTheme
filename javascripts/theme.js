@@ -175,6 +175,7 @@ $(document).ready(function() {
       });
     }
 
+    //logger iframe
     if (false) {
       var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 400px" src="http://timey.eu01.aws.af.cm/?redmine[project_id]='+$projectId+'&redmine[issue_id]='+$issueId+'"></iframe></div>';
       if (matchPage('controller-timelog', 'action-new')) {
@@ -187,10 +188,19 @@ $(document).ready(function() {
       }
     }
 
+    //
+    $('#history>.journal').addClass('peekable'); // css({height: 0, borderTop: '10px'});
+    $('#history .wiki').closest('.journal').removeClass('peekable');
+    $('#history h3').append(' <a href="#" class="showStatusChanges">(show all issue status changes)</a>');
+    $('#history h3 a').click(function() {
+      $('#history>.journal').removeClass('peekable');
+      $('.showStatusChanges').hide();
+      return false;
+    });
+
     // experimental
     var usedLanguage = assessUsedLanguage();
 });
-
 
 /* page matching */
 function matchPage(controller, action) {

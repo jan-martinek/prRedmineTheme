@@ -58,6 +58,14 @@ textarea, textarea.wiki-edit {
   li a.selected, #main-menu li a.selected:hover { background-color: white; }
 }
 
+#history h3	.showStatusChanges {
+	display: block;
+	float: right;
+	font-size: 12px;
+	font-weight: normal;
+	font-family: verdana, sans-serif;
+}
+
 #history .journal {
 	margin-bottom: 30px;
 
@@ -77,6 +85,21 @@ textarea, textarea.wiki-edit {
 		strong {
 			font-weight: normal;
 			font-style: italic;
+		}
+	}
+
+	&.peekable {
+		height: 0;
+		border-top: 5px solid #eee;
+		overflow: hidden;
+		-webkit-transition: height 1s ease;
+		-moz-transition: height 1s ease;
+		-ms-transition: height 1s ease;
+		-o-transition: height 1s ease;
+		transition: height 1s ease;
+
+		&:hover {
+			height: auto;
 		}
 	}
 }
