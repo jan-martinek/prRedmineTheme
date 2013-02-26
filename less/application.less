@@ -67,7 +67,7 @@ textarea, textarea.wiki-edit {
 }
 
 #history .journal {
-	margin-bottom: 30px;
+	margin: 30px 0;
 
 	ul.details {
 		background: #f8f8f8;
@@ -89,19 +89,40 @@ textarea, textarea.wiki-edit {
 	}
 
 	&.peekable {
-		height: 0;
-		border-top: 5px solid #eee;
-		overflow: hidden;
-		-webkit-transition: height 1s ease;
-		-moz-transition: height 1s ease;
-		-ms-transition: height 1s ease;
-		-o-transition: height 1s ease;
-		transition: height 1s ease;
+		margin: 0;
 
-		display: none; /* trying everything */
+		h4 {
+			text-indent: -999px;
+
+			img {
+				margin-top: -0px;
+				float: left;
+			}
+		}
+
+		ul {
+			margin: -26px 0 0 30px;
+			padding: 8px 7px 7px;
+
+			li {
+				display: inline;
+				list-style-type: none;
+
+				&:after {
+					content: ', ';
+				}
+
+				&:last-child:after {
+					content: '.';
+				}
+			}
+		}
 
 		&:hover {
-			height: auto;
+			ul {
+				cursor: pointer;
+				background-color: #ddd;
+			}
 		}
 	}
 }

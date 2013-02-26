@@ -192,6 +192,10 @@ $(document).ready(function() {
     $('#history>.journal').addClass('peekable'); // css({height: 0, borderTop: '10px'});
     $('#history .wiki').closest('.journal').removeClass('peekable');
     $('#history h3').append(' <a href="#" class="showStatusChanges">(show all issue status changes)</a>');
+    $('.peekable').click(function() {
+      $(this).removeClass('peekable');
+    });
+
     $('#history h3 a').click(function() {
       $('#history>.journal').removeClass('peekable');
       $('.showStatusChanges').hide();
