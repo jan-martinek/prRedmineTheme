@@ -246,7 +246,7 @@ function getIssueId() {
 
   //on time log page
   if (matchPage('controller-timelog', 'action-new')) {
-    issueId = /^.+issues\/([0-9]+)\/$/.exec($('input[name="back_url"]').attr('value')).pop();
+    issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
   }
 
   console.log('issue id recognized: ' + issueId);
