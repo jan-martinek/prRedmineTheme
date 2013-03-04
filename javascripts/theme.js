@@ -241,12 +241,16 @@ function getIssueId() {
 
   //on issue page
   if (matchPage('controller-issues', 'action-show')) {
-    issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
+    if ($('h2').eq(0).text().match(/^.+\#([0-9]+)/)) {
+      issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
+    }
   }
 
   //on time log page
   if (matchPage('controller-timelog', 'action-new')) {
-    issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
+    if ($('input[name="back_url"]').attr('value').match(/^.+issues\/([0-9]+)\/?$/)) {
+      issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
+    }
   }
 
   console.log('issue id recognized: ' + issueId);
