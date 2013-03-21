@@ -377,20 +377,20 @@ function createVerbalDate(value) {
       var textualDueDate = '';
 
       switch (daysCount) {
-        case -1:
+        case 1:
           textualDueDate = 'Today';
           break;
-        case -2:
+        case 0:
           textualDueDate = 'Yesterday';
           break;
-        case 0:
+        case 2:
           textualDueDate = 'Tomorrow';
           break;
-        case 1:
-        case 2:
         case 3:
         case 4:
         case 5:
+        case 6:
+        case 7:
           textualDueDate = weekday[date.getDay()].substring(0,3) + ' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.';
           break;
         default:
