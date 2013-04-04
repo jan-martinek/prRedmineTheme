@@ -176,17 +176,7 @@ $(document).ready(function() {
     }
 
     //logger iframe
-    if (false) {
-      var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 400px" src="http://timey.eu01.aws.af.cm/?redmine[project_id]='+$projectId+'&redmine[issue_id]='+$issueId+'"></iframe></div>';
-      if (matchPage('controller-timelog', 'action-new')) {
-        $('#new_time_entry').after(timeyLogger);
-        $('#new_time_entry').hide();
-      }
-      if (matchPage('controller-issues', 'action-show')) {
-        $('.tabular.timeLogging').append(timeyLogger);
-        $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
-      }
-    }
+    insertTimeySwitch();
 
     //
     $('#history>.journal').addClass('peekable'); // css({height: 0, borderTop: '10px'});
@@ -205,6 +195,43 @@ $(document).ready(function() {
     // experimental
     var usedLanguage = assessUsedLanguage();
 });
+
+
+
+
+
+function insertTimeySwitch() {
+  var timeySwitch = '<a class="timeySwitch" href="#">logovat v Timey</a>';
+  if (matchPage('controller-timelog', 'action-new')) {
+    $('#new_time_entry').prepend(timeySwitch);
+
+  }
+  if (matchPage('controller-issues', 'action-show')) {
+    $('.tabular.timeLogging').prepend(timeySwitch);
+  }
+
+  $('.timeySwitch').click(function() {
+    insertTimeyLogger($projectId, $issueId);
+    return false;
+  });
+}
+
+
+function insertTimeyLogger(projectId, issueId) {
+  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 400px" src="'+
+  'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+'#/logs/new'+
+  //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
+  '"></iframe></div>';
+  if (matchPage('controller-timelog', 'action-new')) {
+    $('#new_time_entry').after(timeyLogger);
+    $('#new_time_entry').hide();
+  }
+  if (matchPage('controller-issues', 'action-show')) {
+    $('.tabular.timeLogging').append(timeyLogger);
+    $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
+  }
+}
+
 
 /* page matching */
 function matchPage(controller, action) {
