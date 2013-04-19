@@ -13,7 +13,7 @@ $(document).ready(function() {
         var author = $('p.author a').first().attr('href').substring(7);
         setTimeout(function() {
           $('select#issue_assigned_to_id').val(author);
-          $('select#issue_assigned_to_id').parent().highlight();
+          $('select#issue_assigned_to_id').prev('label').highlight();
         }, 500);
       }
 
@@ -22,7 +22,7 @@ $(document).ready(function() {
           if ($('#issue_custom_field_values_24').size() > 0) {
               var date = new Date();
               $('#issue_custom_field_values_24').val(date.yyyymmdd());
-              $('#issue_custom_field_values_24').parent().highlight();
+              $('#issue_custom_field_values_24').prev('label').highlight();
           }
         }, 500);
       }
@@ -178,8 +178,11 @@ $(document).ready(function() {
     //logger iframe
     insertTimeySwitch();
 
-    //
-    $('#history>.journal').addClass('peekable'); // css({height: 0, borderTop: '10px'});
+    //timey link
+    $('<div id="enterTimey" style="float: right"><a href="http://timey.eu01.aws.af.cm" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
+
+    //simplified timeline in issues
+    $('#history>.journal').addClass('peekable');
     $('#history .wiki').closest('.journal').removeClass('peekable');
     $('#history h3').append(' <a href="#" class="showStatusChanges">(show all issue status changes)</a>');
     $('.peekable').click(function() {
