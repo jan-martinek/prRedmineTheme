@@ -269,7 +269,9 @@ form {
 	}
 }
 
+button.toggleSidebar:hover, button.minimize:hover {
 
+}
 button.toggleSidebar, button.minimize {
 	position: absolute;
 	top: 10px; right: 10px;
@@ -279,16 +281,23 @@ button.toggleSidebar, button.minimize {
 	line-height: 20px;
 	color: #000000;
 	text-shadow: 0 1px 0 #ffffff;
-	opacity: 0.2;
 	filter: alpha(opacity=20);
 
 	padding: 0;
-	margin: -10px -5px 0 0;
+	margin: -10px -10px 0 0;
+
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	border-width: 0 30px 30px 0;
+	border-color: transparent #5fbaed transparent transparent;
 
 	cursor: pointer;
 	background: transparent;
-	border: 0;
 	-webkit-appearance: none;
+}
+button.toggleSidebar:hover, button.minimize:hover {
+	border-color: transparent red transparent transparent;
 }
 
 button.minimize {
