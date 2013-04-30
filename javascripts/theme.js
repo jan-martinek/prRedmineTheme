@@ -221,7 +221,7 @@ function insertTimeySwitch() {
 
 
 function insertTimeyLogger(projectId, issueId) {
-  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 400px" src="'+
+  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 180px" src="'+
   'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+'#/logs/new'+
   //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
   '"></iframe></div>';
