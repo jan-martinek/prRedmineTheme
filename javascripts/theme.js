@@ -221,8 +221,15 @@ function insertTimeySwitch() {
 
 
 function insertTimeyLogger(projectId, issueId) {
-  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 180px" src="'+
-  'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+'#/logs/new'+
+  var url = 'http://timey.eu01.aws.af.cm/';
+  if (projectId > 0) {
+    url = url+'?redmine[project_id]='+projectId;
+    if (issueId > 0) url = url+'&redmine[issue_id]='+issueId;
+  }
+  url = url+'#/logs/new';
+
+  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 220px" src="'+
+  url+
   //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
   '"></iframe></div>';
   if (matchPage('controller-timelog', 'action-new')) {
