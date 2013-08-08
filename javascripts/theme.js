@@ -7,6 +7,8 @@ $(document).ready(function() {
     $issueId = getIssueId();
     $projectId = getProjectId();
 
+    $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">');
+
     // return closed ticket to its author ans set closing time automatically where possible
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
 
@@ -132,51 +134,50 @@ $(document).ready(function() {
     }
 
     // floating update textarea
-    if ($(window).width() > 768) {
-      var updateForm = $('#update');
-      var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
-      var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
-      var textarea = textareaWrapper.find('textarea');
+    var updateForm = $('#update');
+    var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
+    var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
+    var textarea = textareaWrapper.find('textarea');
 
-      textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
-      var collapseLink = $('.collapseTextarea');
+    textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
+    var collapseLink = $('.collapseTextarea');
 
-      collapseLink.click(function() {
-        if (textarea.height() > 100) {
-          collapseLink.css({bottom: '50px'}).html('&#x25B2;');
-          textareaTools.hide();
-          $('#update.fixedTextarea input[name="commit"]').hide();
-          textarea.animate({height: '40px'}, 'fast');
-        } else {
+    collapseLink.click(function() {
+      if (textarea.height() > 100) {
+        collapseLink.css({bottom: '40px'}).html('&#x25B2;');
+        textareaTools.hide();
+        $('#update.fixedTextarea input[name="commit"]').hide();
+        textarea.animate({height: '40px'}, 'fast');
+      } else {
+        collapseLink.css({bottom: ''}).html('&#x25BC;');
+        textareaTools.show();
+        $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
+        textarea.animate({height: '180px'}, 'fast');
+      }
+      return false;
+    });
+
+    $(window).scroll(function() {
+      if ($(updateForm).is(':visible')) {
+        var range = textareaWrapper.offset().top + textareaWrapper.height();
+        var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
+
+        if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
+          //textareaWrapper.css({'height': (textarea.height() + 20) + 'px'});
+          //textarea.css({width: (textarea.width() + 20) +'px', height: (textarea.height() + 20) +'px'});
           collapseLink.css({bottom: ''}).html('&#x25BC;');
+          updateForm.addClass('fixedTextarea');
+        } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
+          textareaWrapper.css({height: ''});
+          textarea.css({width: '', height: ''});
           textareaTools.show();
           $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-          textarea.animate({height: '180px'}, 'fast');
+          $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
+          $('#update.fixedTextarea').removeClass('fixedTextarea');
         }
-        return false;
-      });
+      }
+    });
 
-      $(window).scroll(function() {
-        if ($(updateForm).is(':visible')) {
-          var range = textareaWrapper.offset().top + textareaWrapper.height();
-          var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
-
-          if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
-            textareaWrapper.css({'height': (textarea.height() + 20) + 'px'});
-            textarea.css({width: (textarea.width() + 20) +'px', height: (textarea.height() + 20) +'px'});
-            collapseLink.css({bottom: ''}).html('&#x25BC;');
-            updateForm.addClass('fixedTextarea');
-          } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
-            textareaWrapper.css({height: ''});
-            textarea.css({width: '', height: ''});
-            textareaTools.show();
-            $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-            $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
-            $('#update.fixedTextarea').removeClass('fixedTextarea');
-          }
-        }
-      });
-    }
 
     //logger iframe
     insertTimeySwitch();

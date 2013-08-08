@@ -167,59 +167,57 @@ form {
 
 /* fixed textarea */
 
-@media screen and (min-width: 768px) {
-	#update a.collapseTextarea {
-		display: none;
+#update a.collapseTextarea {
+	display: none;
+}
+
+#update.fixedTextarea {
+	input[name="commit"] {
+		position: fixed;
+		bottom: 184px; left: 40px;
+	}
+}
+
+#update.fixedTextarea .issueJournalNotes {
+
+	.jstElements {
+		position: fixed;
+		height: 26px; width: 600px;
+		background: rgba(255, 255, 255, .9);
+		bottom: 180px; left: 95px;
+		padding: 2px 100px 2px 20px;
 	}
 
-	#update.fixedTextarea {
-		input[name="commit"] {
-			position: fixed;
-			bottom: 194px; left: 85px;
-		}
-	}
+	.jstEditor {
+		height: 173px;
 
-	#update.fixedTextarea .issueJournalNotes {
-
-		.jstElements {
+		textarea {
 			position: fixed;
-			height: 26px; width: 600px;
-			background: rgba(255, 255, 255, .9);
-			bottom: 190px; left: 140px;
-			padding: 2px 100px 2px 20px;
+			height: 180px; width: auto;
+			bottom: 0px; left: 0px; right: 0px;
+
+			-webkit-box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
+			box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
+
+			z-index: 11;
 		}
 
-		.jstEditor {
-			height: 173px;
+		a.collapseTextarea {
+			display: block;
+			position: fixed;
+			bottom: 180px; left: 0px;
 
-			textarea {
-				position: fixed;
-				height: 160px; width: 500px;
-				bottom: 10px; left: 45px;
+			background: #5fbaed;
+			color: white;
+			text-decoration: none;
+			width: 30px; height: 30px;
+			line-height: 30px;
+			overflow: hidden;
+			text-align: center;
+			font-size: 15px;
 
-				-webkit-box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
-				box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
-
-				z-index: 11;
-			}
-
-			a.collapseTextarea {
-				display: block;
-				position: fixed;
-				bottom: 190px; left: 45px;
-
-				background: #5fbaed;
-				color: white;
-				text-decoration: none;
-				width: 30px; height: 30px;
-				line-height: 30px;
-				overflow: hidden;
-				text-align: center;
-				font-size: 15px;
-
-				&:hover {
-					background: #182f3c;
-				}
+			&:hover {
+				background: #182f3c;
 			}
 		}
 	}
@@ -493,8 +491,67 @@ body.zenMode {
 }
 
 /* mobile - experimental */
-/* @media screen and (max-width: 480px) {
-	textarea {
-		max-width: 460px;
+@media screen and (max-width: 767px) {
+	body, #quick-search, #header, #top-menu, #main-menu, #main, #sidebar, #content {
+		position: static;
+		min-width: 0;
+		min-height: 0;
+		height: auto;
+		width: auto;
+		float: none;
+		padding: 0;
+		margin: 0;
 	}
-} */
+
+	#main-menu ul li, #main-menu ul li a, #top-menu li, #top-menu div, #top-menu ul  {
+		float: none;
+		display: inline;
+		line-height: 30px
+	}
+
+	#main, #top-menu {
+		padding: 0 10px;
+	}
+	#top-menu {
+		display: none;
+	}
+
+	#main.nosidebar #content {
+		padding: 0;
+	}
+	#header {
+		padding: 20px 10px 0;
+	}
+	#header h1 {
+		padding: 45px 0 0;
+		margin: 5px 0;
+		background-position: -15px 0px;
+	}
+	#main {
+		position: relative;
+	}
+
+	#sidebar {
+		margin: -10px -10px 0;
+		padding: 10px;
+	}
+	#content {
+		margin-top: 20px;
+	}
+	.splitcontentright, .splitcontentleft {
+		float: none;
+		width: auto;
+	}
+	.jstElements {
+		display: none;
+	}
+
+	#attachments_fields span {
+		white-space: normal;
+	}
+
+	.collapseTextarea {
+		display: none;
+	}
+
+}
