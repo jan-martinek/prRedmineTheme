@@ -100,6 +100,18 @@ $(document).ready(function() {
       $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
 
       // leaner update form cookie init
+      issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+      $('.issueAttributes button.minimize').click(function() {
+        toggleFormFolding('issueAttributes', $(this));
+        return false;
+      });
+
+      timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+      $('.timeLogging button.minimize').click(function() {
+        toggleFormFolding('timeLogging', $(this));
+        return false;
+      });
+
       if ($.cookie('issueAttributesMinimized')) {
         $('.issueAttributes button.minimize').click();
         $.cookie('issueAttributesMinimized', true, { expires: 7, path: '/' }); // renew expiration
@@ -115,18 +127,6 @@ $(document).ready(function() {
     var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
     var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
     var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
-
-    issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-    $('.issueAttributes button.minimize').click(function() {
-      toggleFormFolding('issueAttributes', $(this));
-      return false;
-    });
-
-    timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-    $('.timeLogging button.minimize').click(function() {
-      toggleFormFolding('timeLogging', $(this));
-      return false;
-    });
 
     // floating update textarea
     if ($(window).width() > 768) {
