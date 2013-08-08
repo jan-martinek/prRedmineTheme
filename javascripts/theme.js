@@ -103,16 +103,6 @@ $(document).ready(function() {
 
       // leaner update form cookie init
 
-      $('.issueAttributes button.minimize').click(function() {
-        toggleFormFolding('issueAttributes', $(this));
-        return false;
-      });
-
-      $('.timeLogging button.minimize').click(function() {
-        toggleFormFolding('timeLogging', $(this));
-        return false;
-      });
-
       e.preventDefault();
     });
 
@@ -122,12 +112,20 @@ $(document).ready(function() {
     var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
 
     issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+    $('.issueAttributes button.minimize').click(function() {
+      toggleFormFolding('issueAttributes', $(this));
+      return false;
+    });
     if ($.cookie('issueAttributesMinimized')) {
       $('.issueAttributes button.minimize').click();
       $.cookie('issueAttributesMinimized', true, { expires: 7, path: '/' }); // renew expiration
     }
 
     timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+    $('.timeLogging button.minimize').click(function() {
+      toggleFormFolding('timeLogging', $(this));
+      return false;
+    });
     if ($.cookie('timeLoggingMinimized')) {
       $('.timeLogging button.minimize').click();
       $.cookie('timeLoggingMinimized', true, { expires: 7, path: '/' }); // renew expiration
