@@ -76,13 +76,13 @@ $(document).ready(function() {
     var urlHash = 'everywhere'; //disabled, hides sidebar on all pages - window.location.href.hashCode();
     if ($.cookie('sidebarHidden.' + urlHash)) {
       hideSidebar();
-      $.cookie('sidebarHidden.' + urlHash, true, { expires: 5 }); //extend expiration
+      $.cookie('sidebarHidden.' + urlHash, true, { expires: 5, path: '/' }); //extend expiration
     }
 
     $('button.toggleSidebar').click(function () {
       if ($('#sidebar').is(':visible')) {
         hideSidebar();
-        $.cookie('sidebarHidden.' + urlHash, true, { expires: 5 });
+        $.cookie('sidebarHidden.' + urlHash, true, { expires: 5, path: '/' });
       } else {
         showSidebar();
         $.removeCookie('sidebarHidden.' + urlHash);
