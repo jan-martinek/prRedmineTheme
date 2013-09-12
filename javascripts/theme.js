@@ -12,6 +12,8 @@ $(document).ready(function() {
     // return closed ticket to its author ans set closing time automatically where possible
     // not really elegant solution with timeout, may fail when ajax request is not fast enough
 
+    /* temporarily disabled, timeout lag is not reliable
+
     $('#all_attributes').on('change','select#issue_status_id',  function() {
       if ($(this).val() == 3) { // Solved
         var author = $('p.author a').first().attr('href').substring(7);
@@ -30,7 +32,7 @@ $(document).ready(function() {
           }
         }, 500);
       }
-    });
+    }); */
 
     var selector = 'table.issues .due_date';
     setDefaultCellContentDataAttribute(selector);
