@@ -184,7 +184,7 @@ $(document).ready(function() {
     insertTimeySwitch();
 
     //timey link
-    $('<div id="enterTimey" style="float: right"><a href="http://timey.eu01.aws.af.cm" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
+    $('<div id="enterTimey" style="float: right"><a href="http://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
 
     //simplified timeline in issues
     $('#history>.journal').addClass('peekable');
