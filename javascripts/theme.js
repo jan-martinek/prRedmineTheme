@@ -184,7 +184,7 @@ $(document).ready(function() {
     insertTimeySwitch();
 
     //timey link
-    $('<div id="enterTimey" style="float: right"><a href="http://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
+    $('<div id="enterTimey" style="float: right"><a href="https://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
 
     //simplified timeline in issues
     $('#history>.journal').addClass('peekable');
@@ -226,7 +226,7 @@ function insertTimeySwitch() {
 
 
 function insertTimeyLogger(projectId, issueId) {
-  var url = 'http://timey.eu01.aws.af.cm/';
+  var url = 'https://timey.proofreason.com/';
   if (projectId > 0) {
     url = url+'?redmine[project_id]='+projectId;
     if (issueId > 0) url = url+'&redmine[issue_id]='+issueId;
