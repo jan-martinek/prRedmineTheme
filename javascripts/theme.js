@@ -34,7 +34,7 @@ $(document).ready(function() {
 
     var selector = 'table.issues .due_date';
     setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
+    addAlternateCellContent(selector, 'relativeTime', createVerbalDate);
     addAlternateCellContent(selector, 'verbalDate', createVerbalDate);
     showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
 
@@ -420,20 +420,18 @@ function createVerbalDate(value) {
       var textualDueDate = '';
 
       switch (daysCount) {
-        case -1:
+        case 0:
           textualDueDate = 'Yesterday';
           break;
-        case 0:
-          textualDueDate = 'Today';
-          break;
         case 1:
-          textualDueDate = 'Tomorrow';
+          textualDueDate = /* 'Today' + */ createRelativeTime(value);
           break;
         case 2:
+          textualDueDate = 'Tomorrow';
+          break;
         case 3:
         case 4:
         case 5:
-        case 6:
           textualDueDate = weekday[date.getDay()].substring(0,3) + ' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.';
           break;
         default:
@@ -510,10 +508,10 @@ function dateFromRedmineString(issueDate) {
   var year = issueDateArray[0];
   var month = issueDateArray[1]-1;
   var day = issueDateArray[2];
-  var minutes = issueDateArray[3] ? issueDateArray[3] : 0;
-  var seconds = issueDateArray[4] ? issueDateArray[4] : 0;
+  var hours = issueDateArray[3] ? issueDateArray[3] : 12;
+  var minutes = issueDateArray[4] ? issueDateArray[4] : 0;
 
-  return new Date(year, month, day, minutes, seconds);
+  return new Date(year, month, day, hours, minutes);
 }
 
 function assessUsedLanguage() {
