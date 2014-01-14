@@ -438,6 +438,10 @@ function createVerbalDate(value) {
           textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
       }
 
+      if (date < new Date()) {
+        return '<b style="color: red">' + date.toRelativeTime(new Date(), 5000, true) + '</b>';
+      }
+
       return textualDueDate;
   }
 }
