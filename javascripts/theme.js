@@ -135,7 +135,7 @@ $(document).ready(function() {
     }
 
     // floating update textarea
-    if ($(window).width() > 768) {
+    if ($(window).width() >= 891) {
       var updateForm = $('#update');
       var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
       var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
