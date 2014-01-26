@@ -1,534 +1,577 @@
-// Template code
+var ProofReasonRedmineTheme = {
+  init: function() {
+    this.ZenMode.init();
+    this.BetterHeader.init();
+    this.BetterSidebar.init();
+    this.BetterUpdateForm.init();
+    this.TimeyIntegration.init();
+    this.BetterTimeline.init();
+    //AutoReturnToOwner.init(); disabled, timeout solution is not reliable
+    this.AlternateCellFormats.init();
+  },
 
-var usedLanguage;
+  tools: {
+    dateFromRedmineString: function(issueDate) {
+      issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
 
-$(document).ready(function() {
-    $userId = getUserId();
-    $issueId = getIssueId();
-    $projectId = getProjectId();
+      var year = issueDateArray[0];
+      var month = issueDateArray[1]-1;
+      var day = issueDateArray[2];
+      var hours = issueDateArray[3] ? issueDateArray[3] : 12;
+      var minutes = issueDateArray[4] ? issueDateArray[4] : 0;
 
-    // return closed ticket to its author ans set closing time automatically where possible
-    // not really elegant solution with timeout, may fail when ajax request is not fast enough
+      return new Date(year, month, day, hours, minutes);
+    },
 
-    /* temporarily disabled, timeout lag is not reliable
-
-    $('#all_attributes').on('change','select#issue_status_id',  function() {
-      if ($(this).val() == 3) { // Solved
-        var author = $('p.author a').first().attr('href').substring(7);
-        setTimeout(function() {
-          $('select#issue_assigned_to_id').val(author);
-          $('select#issue_assigned_to_id').prev('label').highlight();
-        }, 500);
-      }
-
-      if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
-        setTimeout(function() {
-          if ($('#issue_custom_field_values_24').size() > 0) {
-              var date = new Date();
-              $('#issue_custom_field_values_24').val(date.yyyymmdd());
-              $('#issue_custom_field_values_24').prev('label').highlight();
-          }
-        }, 500);
-      }
-    }); */
-
-    var selector = 'table.issues .due_date';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'relativeTime', createVerbalDate);
-    addAlternateCellContent(selector, 'verbalDate', createVerbalDate);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
-
-    selector = 'table.issues .updated_on';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'relativeTime', createRelativeTime);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'relativeTime');
-
-    selector = 'table.issues td.status';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'statusIcon', createStatusIcon);
-    addAlternateCellContent(selector, 'newHighlighted', highlightNew);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'newHighlighted');
-    //if ($.cookie(selector) == 'statusIcon') showAlternateCellContent(selector, 'statusIcon');
-
-    selector = 'table.issues .tracker';
-    setDefaultCellContentDataAttribute(selector);
-    addAlternateCellContent(selector, 'shortIssueType', createShortIssueType);
-    showAlternateCellContent(selector, $.cookie(selector) ? $.cookie(selector) : 'shortIssueType');
-    $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
-
-
-    // zen mode
-    $('<div id="enterZenMode" style="float: right"><a href="#">Zen mode</a></div>').insertBefore('#loggedas');
-    $('<a id="exitZenMode" href="#">&#9775; Exit zen</a>').appendTo('#main>#content>.contextual');
-
-    // toggle zen mode - cookie intentionally not implemented
-    $('body').on('click', '#enterZenMode', function() {
-      $('body').addClass('zenMode');
-      return false;
-    });
-    $('body').on('click', '#exitZenMode', function() {
-      $('body').removeClass('zenMode');
-      return false;
-    });
-
-
-    // toggle sidebar visibility
-    if ($('#sidebar').children().length > 0) {
-      $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
-    }
-
-    var urlHash = 'everywhere'; //disabled, hides sidebar on all pages - window.location.href.hashCode();
-    if ($.cookie('sidebarHidden.' + urlHash)) {
-      hideSidebar();
-      $.cookie('sidebarHidden.' + urlHash, true, { expires: 5, path: '/' }); //extend expiration
-    }
-
-    $('button.toggleSidebar').click(function () {
-      if ($('#sidebar').is(':visible')) {
-        hideSidebar();
-        $.cookie('sidebarHidden.' + urlHash, true, { expires: 5, path: '/' });
+    cookie: function(key, value) {
+      if (value) {
+        return $.cookie('theme.' + key, value, { expires: 5, path: '/' });
       } else {
-        showSidebar();
-        $.removeCookie('sidebarHidden.' + urlHash);
+        return $.cookie('theme.' + key);
       }
-    });
+    },
 
-    // header links
-    $('#header h1').prepend('<a class="go-to-my-issues" href="https://redmine.proofreason.com/issues?query_id=135">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
-    //standard link for my issues: /issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc
+    removeCookie: function(key) {
+      return $.removeCookie('theme.' + key, { expires: 5, path: '/' });
+    },
+  },
 
-    // better functioning update, mainly on mobile
-    $('.icon-edit[onclick="showAndScrollTo("update", "notes"); return false;"]').addClass('updateButton').attr('onclick', '');
-    $('.updateButton').click(function(e) {
-      $('#update').show();
-      $('#notes').focus();
-      $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
+  debug: function() {
+    this.PagePropertyMiner.debug();
+  },
 
-      // leaner update form cookie init
+  PagePropertyMiner: {
+    projectId: null,
+    issuedId: null,
+    userId: null,
+    lang: null,
 
-      e.preventDefault();
-    });
+    matchPage: function (controller, action) {
+      var body = $('body');
 
-    //leaner update form - temporary dirty implementation
-    var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
-    var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
-    var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
+      if (body.hasClass(controller) && body.hasClass(action)) {
+        return true;
+      }
 
-    issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-    $('.issueAttributes button.minimize').click(function() {
-      toggleFormFolding('issueAttributes', $(this));
       return false;
-    });
-    if ($.cookie('issueAttributesMinimized')) {
-      $('.issueAttributes button.minimize').click();
-      $.cookie('issueAttributesMinimized', true, { expires: 7, path: '/' }); // renew expiration
-    }
+    },
 
-    timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-    $('.timeLogging button.minimize').click(function() {
-      toggleFormFolding('timeLogging', $(this));
-      return false;
-    });
-    if ($.cookie('timeLoggingMinimized')) {
-      $('.timeLogging button.minimize').click();
-      $.cookie('timeLoggingMinimized', true, { expires: 7, path: '/' }); // renew expiration
-    }
-
-    // floating update textarea
-    if ($(window).width() >= 891) {
-      var updateForm = $('#update');
-      var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
-      var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
-      var textarea = textareaWrapper.find('textarea');
-
-      textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
-      var collapseLink = $('.collapseTextarea');
-
-      collapseLink.click(function() {
-        if (textarea.height() > 100) {
-          collapseLink.css({bottom: '50px'}).html('&#x25B2;');
-          textareaTools.hide();
-          $('#update.fixedTextarea input[name="commit"]').hide();
-          textarea.animate({height: '40px'}, 'fast');
-        } else {
-          collapseLink.css({bottom: ''}).html('&#x25BC;');
-          textareaTools.show();
-          $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-          textarea.animate({height: '180px'}, 'fast');
+    getProjectId: function() {
+      if (this.projectId === null) {
+        if (this.matchPage('controller-issues', 'action-show')) {
+          this.projectId = $('#issue_project_id option[selected="selected"]').val();
         }
+
+        if (this.matchPage('controller-timelog', 'action-new')) {
+          this.projectId = $('#time_entry_project_id').val();
+        }
+
+        console.log('project id recognized: ' + this.projectId);
+      }
+      return this.projectId;
+    },
+
+    getIssueId: function() {
+      if (this.issueId === null) {
+
+        if (this.matchPage('controller-issues', 'action-show')) {
+          if ($('h2').eq(0).text().match(/^.+\#([0-9]+)/)) {
+            this.issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
+          }
+        }
+
+        if (this.matchPage('controller-timelog', 'action-new')) {
+          if ($('input[name="back_url"]').attr('value').match(/^.+issues\/([0-9]+)\/?$/)) {
+            this.issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
+          }
+        }
+
+        console.log('issue id recognized: ' + this.issueId);
+      }
+
+      return this.issueId;
+    },
+
+    getUserId: function() {
+      if (this.userId === null) {
+        this.userId = /users\/([0-9]+)$/.exec($('#loggedas a').attr('href')).pop();
+
+        console.log('user id recognized: ' + this.userId);
+      }
+
+      return this.userId;
+    },
+
+    assessUsedLanguage: function() {
+      if (this.lang === null) {
+
+        if ($('#top-menu a.home').text() == 'Úvodní') {
+          this.lang = 'cs';
+        } else {
+          this.lang = 'en';
+        }
+
+        console.log('used language recognized: ' + this.lang);
+      }
+
+      return this.lang;
+    },
+
+    debug: function() {
+      this.getProjectId();
+      this.getIssueId();
+      this.getUserId();
+      this.assessUsedLanguage();
+    }
+
+  },
+
+  BetterHeader: {
+    init: function() {
+      // header links
+      $('#header h1').prepend('<a class="go-to-my-issues" href="https://redmine.proofreason.com/issues?query_id=135">My issues</a><a class="go-to-projects" href="/projects">Projects</a>');
+      //standard link for my issues: /issues?assigned_to_id=me&set_filter=1&sort=priority%3Adesc%2Cupdated_on%3Adesc
+    }
+  },
+
+  BetterSidebar: {
+    init: function() {
+      this.tools = ProofReasonRedmineTheme.tools;
+
+      if ($('#sidebar').children().length > 0) {
+        $('#sidebar').before('<button type="button" class="toggleSidebar">&times;</button>');
+      }
+
+      if (this.tools.cookie('sidebarHidden')) {
+        this.hideSidebar();
+        this.tools.cookie('sidebarHidden', true); //extend expiration
+      }
+
+      this.setListeners();
+    },
+
+    setListeners: function() {
+      $('button.toggleSidebar').click(function () {
+        ProofReasonRedmineTheme.BetterSidebar.toggleSidebar();
+      });
+    },
+
+    toggleSidebar: function() {
+
+      if ($('#sidebar').is(':visible')) {
+        this.hideSidebar();
+      } else {
+        this.showSidebar();
+      }
+    },
+
+    showSidebar: function() {
+      $('#sidebar').show();
+      $('button.toggleSidebar').html('&times;');
+      $('#main').removeClass('nosidebar');
+      this.tools.removeCookie('sidebarHidden');
+    },
+
+    hideSidebar: function() {
+      $('#sidebar').hide();
+      $('button.toggleSidebar').html('&larr;');
+      $('#main').addClass('nosidebar');
+      this.tools.cookie('sidebarHidden', true);
+    }
+  },
+
+  BetterUpdateForm: {
+    init: function() {
+      this.tools = ProofReasonRedmineTheme.tools;
+
+      // better functioning update, mainly on mobile
+      $('.icon-edit[onclick="showAndScrollTo("update", "notes"); return false;"]').addClass('updateButton').attr('onclick', '');
+      $('.updateButton').click(function(e) {
+        $('#update').show();
+        $('#notes').focus();
+        $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
+
+        // leaner update form cookie init
+
+        e.preventDefault();
+      });
+
+      //leaner update form - temporary dirty implementation
+      var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
+      var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
+      var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
+
+      issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+      $('.issueAttributes button.minimize').click(function() {
+        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('issueAttributes', $(this));
         return false;
       });
+      if (this.tools.cookie('issueAttributesMinimized')) {
+        $('.issueAttributes button.minimize').click();
+        this.tools.cookie('issueAttributesMinimized', true); // renew expiration
+      }
 
-      $(window).scroll(function() {
-        if ($(updateForm).is(':visible')) {
-          var range = textareaWrapper.offset().top + textareaWrapper.height();
-          var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
+      timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
+      $('.timeLogging button.minimize').click(function() {
+        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('timeLogging', $(this));
+        return false;
+      });
+      if (this.tools.cookie('timeLoggingMinimized')) {
+        $('.timeLogging button.minimize').click();
+        this.tools.cookie('timeLoggingMinimized', true); // renew expiration
+      }
 
-          if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
-            textareaWrapper.css({'height': (textarea.height() + 20) + 'px'});
-            textarea.css({width: (textarea.width() + 20) +'px', height: (textarea.height() + 20) +'px'});
+      // floating update textarea
+      if ($(window).width() >= 891) {
+        var updateForm = $('#update');
+        var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
+        var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
+        var textarea = textareaWrapper.find('textarea');
+
+        textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
+        var collapseLink = $('.collapseTextarea');
+
+        collapseLink.click(function() {
+          if (textarea.height() > 100) {
+            collapseLink.css({bottom: '50px'}).html('&#x25B2;');
+            textareaTools.hide();
+            $('#update.fixedTextarea input[name="commit"]').hide();
+            textarea.animate({height: '40px'}, 'fast');
+          } else {
             collapseLink.css({bottom: ''}).html('&#x25BC;');
-            updateForm.addClass('fixedTextarea');
-          } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
-            textareaWrapper.css({height: ''});
-            textarea.css({width: '', height: ''});
             textareaTools.show();
             $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-            $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
-            $('#update.fixedTextarea').removeClass('fixedTextarea');
+            textarea.animate({height: '180px'}, 'fast');
           }
+          return false;
+        });
+
+        $(window).scroll(function() {
+          if ($(updateForm).is(':visible')) {
+            var range = textareaWrapper.offset().top + textareaWrapper.height();
+            var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
+
+            if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
+              textareaWrapper.css({'height': (textarea.height() + 20) + 'px'});
+              textarea.css({width: (textarea.width() + 20) +'px', height: (textarea.height() + 20) +'px'});
+              collapseLink.css({bottom: ''}).html('&#x25BC;');
+              updateForm.addClass('fixedTextarea');
+            } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
+              textareaWrapper.css({height: ''});
+              textarea.css({width: '', height: ''});
+              textareaTools.show();
+              $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
+              $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
+              $('#update.fixedTextarea').removeClass('fixedTextarea');
+            }
+          }
+        });
+      }
+    },
+
+    toggleFormFolding: function (groupName, button, buttonStates) {
+      if (!$('#update').hasClass(groupName + 'Minimized')) {
+        $('#update').addClass(groupName + 'Minimized');
+        button.html('<i class="bootstrap-icon-plus"></i>');
+        this.tools.cookie(groupName + 'Minimized', true);
+      } else {
+        $('#update').removeClass(groupName + 'Minimized');
+        button.html('<i class="bootstrap-icon-minus"></i>');
+        this.tools.removeCookie(groupName + 'Minimized');
+      }
+    }
+  },
+
+  AutoReturnToOwner: {
+    init: function() {
+      // return closed ticket to its author ans set closing time automatically where possible
+      // not really elegant solution with timeout, may fail when ajax request is not fast enough
+
+      $('#all_attributes').on('change','select#issue_status_id',  function() {
+        if ($(this).val() == 3) { // Solved
+          var author = $('p.author a').first().attr('href').substring(7);
+          setTimeout(function() {
+            $('select#issue_assigned_to_id').val(author);
+            $('select#issue_assigned_to_id').prev('label').highlight();
+          }, 500);
+        }
+
+        if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
+          setTimeout(function() {
+            if ($('#issue_custom_field_values_24').size() > 0) {
+                var date = new Date();
+                $('#issue_custom_field_values_24').val(date.yyyymmdd());
+                $('#issue_custom_field_values_24').prev('label').highlight();
+            }
+          }, 500);
         }
       });
     }
+  },
 
-    //logger iframe
-    insertTimeySwitch();
+  BetterTimeline: {
+    init: function() {
+      //simplified timeline in issues
+      $('#history>.journal').addClass('peekable');
+      $('#history .wiki').closest('.journal').removeClass('peekable');
+      $('#history h3').append(' <a href="#" class="showStatusChanges">(show all issue status changes)</a>');
+      $('.peekable').click(function() {
+        $(this).removeClass('peekable');
+      });
 
-    //timey link
-    $('<div id="enterTimey" style="float: right"><a href="https://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
+      $('#history h3 a').click(function() {
+        $('#history>.journal').removeClass('peekable');
+        $('.showStatusChanges').hide();
+        return false;
+      });
+    }
+  },
 
-    //simplified timeline in issues
-    $('#history>.journal').addClass('peekable');
-    $('#history .wiki').closest('.journal').removeClass('peekable');
-    $('#history h3').append(' <a href="#" class="showStatusChanges">(show all issue status changes)</a>');
-    $('.peekable').click(function() {
-      $(this).removeClass('peekable');
-    });
+  TimeyIntegration: {
+    init: function() {
+      this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
 
-    $('#history h3 a').click(function() {
-      $('#history>.journal').removeClass('peekable');
-      $('.showStatusChanges').hide();
-      return false;
-    });
+      $('<div id="enterTimey" style="float: right"><a href="https://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
 
-    // experimental
-    usedLanguage = assessUsedLanguage();
+      this.insertTimeySwitch();
+    },
+
+    insertTimeySwitch: function() {
+
+      var timeySwitch = '<a class="timeySwitch" href="#">logovat v Timey</a>';
+
+      if (this.ppm.matchPage('controller-timelog', 'action-new')) {
+        $('#new_time_entry').prepend(timeySwitch);
+      }
+
+      if (this.ppm.matchPage('controller-issues', 'action-show')) {
+        $('.tabular.timeLogging').prepend(timeySwitch);
+      }
+
+      $('.timeySwitch').click(function() {
+        ProofReasonRedmineTheme.TimeyIntegration.insertTimeyLogger();
+        return false;
+      });
+    },
+
+    insertTimeyLogger: function() {
+      var projectId = this.ppm.getProjectId();
+      var issueId = this.ppm.getIssueId();
+
+      var url = 'https://timey.proofreason.com/';
+      if (projectId > 0) {
+        url = url+'?redmine[project_id]='+projectId;
+        if (issueId > 0) url = url+'&redmine[issue_id]='+issueId;
+      }
+      url = url+'#/logs/new';
+
+      var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 220px" src="'+
+      url+
+      //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
+      '"></iframe></div>';
+      if (this.ppm.matchPage('controller-timelog', 'action-new')) {
+        $('#new_time_entry').after(timeyLogger);
+        $('#new_time_entry').hide();
+      }
+      if (this.ppm.matchPage('controller-issues', 'action-show')) {
+        $('.tabular.timeLogging').append(timeyLogger);
+        $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
+      }
+    }
+  },
+
+  AlternateCellFormats: {
+    init: function() {
+      this.tools = ProofReasonRedmineTheme.tools;
+
+      this.setFormatUp('table.issues .due_date', {'verbalDate' : this.format.verbalDate});
+      this.setFormatUp('table.issues .updated_on', {'relativeTime' : this.format.relativeTime});
+      this.setFormatUp('table.issues td.status', {
+        'newHighlighted': this.format.newIssuesHighlighted,
+        'statusIcon' : this.format.statusIcon
+      });
+      this.setFormatUp('table.issues .tracker', {'shortIssueType' : this.format.shortIssueType});
+      $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
+    },
+
+    setFormatUp: function(cellSelector, alternateFormats, originalFormat) {
+      this.prepareCells(cellSelector);
+      for (format in alternateFormats) {
+        this.addAlternateFormat(cellSelector, format, alternateFormats[format]);
+
+        if (originalFormat == null) {
+          originalFormat = format;
+        }
+      }
+      this.showAlternateFormat(cellSelector, this.tools.cookie(cellSelector) ? this.tools.cookie(cellSelector) : originalFormat);
+    },
+
+    prepareCells: function(cells) {
+      $(cells).each(function() {
+        $(this).data('format.' + 'originalFormat', $(this).text());
+        $(this).attr('title', $(this).text());
+        $(this).data('currentlyDisplayed', 'originalFormat');
+      });
+
+      $(cells).click(function() {
+        ProofReasonRedmineTheme.AlternateCellFormats.toggleFormats(cells);
+      });
+    },
+
+    addAlternateFormat: function(cells, format, procedure) {
+      $(cells).each(function() {
+        $(this).data('format.' + format, procedure($(this).text()));
+      });
+    },
+
+    showAlternateFormat: function(cells, format) {
+      $(cells).each(function() {
+        $(this).html($(this).data('format.' + format));
+        $(this).data('currentlyDisplayed', format);
+      });
+    },
+
+    toggleFormats: function(cells) {
+      cell = $(cells).first();
+
+      var data = cell.data();
+      var variants = [];
+      for (var param in data) {
+        if (param.indexOf('format.') === 0) variants.push(param.substring(7));
+      }
+
+      currentFormat = $.inArray(cell.data('currentlyDisplayed'), variants);
+      nextFormat = (currentFormat < variants.length - 1) ? currentFormat + 1 : 0;
+
+      this.tools.cookie(cells, variants[nextFormat]);
+      this.showAlternateFormat(cells, variants[nextFormat]);
+    },
+
+    format: {
+      statusIcon: function(value) {
+        // table cell alternate content creators
+        var statusReplacements = {
+          'Nový / New' : ['file'],
+          'Přiřazený / Assigned' : ['user'],
+          'Vyřešený / Solved' : ['ok'],
+          'Feedback' : ['comment'],
+          'Čeká se / Waiting' : ['refresh'],
+          'Odložený / Postponed' : ['stop'],
+          'Čeká na klienta' : ['eye-open'],
+          'Uzavřený / Closed' : ['home'],
+          'Odmítnutý / Rejected' : ['ban-circle'],
+          'Needs explanation' : ['question-sign'],
+          'Needs design' : ['picture'],
+          'Refused' : ['ban-circle'],
+          'Needs estimation' : ['time'],
+          'Needs estimation approval' : ['time', 'ok-sign'],
+          'Needs implementation' : ['thumbs-up'],
+          'Needs code review' : ['th-list'],
+          'Needs deployment' : ['upload'],
+          'Needs review' : ['eye-open'],
+          'Closed' : ['home']
+        };
+
+        replacementCell = '';
+
+        for (var i = 0; i < statusReplacements[value].length; i++) {
+          replacementCell += '<i class="bootstrap-icon-'+statusReplacements[value][i]+'"></i>';
+        }
+
+        return replacementCell;
+      },
+
+      newIssuesHighlighted: function(value) {
+        if (value == 'Nový / New') {
+          return '<b style="color: red">' + value + '</b>';
+        } else return value;
+      },
+
+      verbalDate: function(value) {
+        var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        if (!value) return '';
+        else {
+            var date = ProofReasonRedmineTheme.tools.dateFromRedmineString(value);
+            var daysCount = daysFromToday(date);
+            var textualDueDate = '';
+
+            switch (daysCount) {
+              case 0:
+                textualDueDate = 'Yesterday';
+                break;
+              case 1:
+                textualDueDate = relativeTime(value);
+                break;
+              case 2:
+                textualDueDate = 'Tomorrow';
+                break;
+              case 3:
+              case 4:
+              case 5:
+                textualDueDate = weekday[date.getDay()].substring(0,3) + ' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.';
+                break;
+              default:
+                textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
+            }
+
+            if (date < new Date()) {
+              return '<b style="color: red">' + date.toRelativeTime(new Date(), 5000, true) + '</b>';
+            }
+
+            return textualDueDate;
+        }
+      },
+
+      relativeTime: function(value) {
+        if (!value) return '';
+        var date = ProofReasonRedmineTheme.tools.dateFromRedmineString(value);
+        return date.toRelativeTime(new Date(), 5000, true);
+      },
+
+      shortIssueType: function(value) {
+        if (value == 'Požadavek') { return '<span style="opacity:.4">&fnof;</span>'; }
+        if (value == 'Feature Request') { return '<span style="opacity:.4">&fnof;</span>'; }
+        else { return value; }
+      }
+    }
+  },
+
+  ZenMode: {
+    init: function() {
+      $('<div id="enterZenMode" style="float: right"><a href="#">Zen mode</a></div>').insertBefore('#loggedas');
+      $('<a id="exitZenMode" href="#">&#9775; Exit zen</a>').appendTo('#main>#content>.contextual');
+
+      // toggle zen mode - cookie intentionally not implemented
+      $('body').on('click', '#enterZenMode', function() {
+        $('body').addClass('zenMode');
+        return false;
+      });
+      $('body').on('click', '#exitZenMode', function() {
+        $('body').removeClass('zenMode');
+        return false;
+      });
+    }
+  }
+}
+
+$(document).ready(function() {
+  ProofReasonRedmineTheme.init();
 });
 
 
 
 
 
-function insertTimeySwitch() {
-  var timeySwitch = '<a class="timeySwitch" href="#">logovat v Timey</a>';
-  if (matchPage('controller-timelog', 'action-new')) {
-    $('#new_time_entry').prepend(timeySwitch);
-
-  }
-  if (matchPage('controller-issues', 'action-show')) {
-    $('.tabular.timeLogging').prepend(timeySwitch);
-  }
-
-  $('.timeySwitch').click(function() {
-    insertTimeyLogger($projectId, $issueId);
-    return false;
-  });
-}
 
 
-function insertTimeyLogger(projectId, issueId) {
-  var url = 'https://timey.proofreason.com/';
-  if (projectId > 0) {
-    url = url+'?redmine[project_id]='+projectId;
-    if (issueId > 0) url = url+'&redmine[issue_id]='+issueId;
-  }
-  url = url+'#/logs/new';
-
-  var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 220px" src="'+
-  url+
-  //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
-  '"></iframe></div>';
-  if (matchPage('controller-timelog', 'action-new')) {
-    $('#new_time_entry').after(timeyLogger);
-    $('#new_time_entry').hide();
-  }
-  if (matchPage('controller-issues', 'action-show')) {
-    $('.tabular.timeLogging').append(timeyLogger);
-    $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
-  }
-}
-
-
-/* page matching */
-function matchPage(controller, action) {
-  var body = $('body');
-
-  if (body.hasClass(controller) && body.hasClass(action)) {
-    return true;
-  }
-
-  return false;
-}
-function getProjectId() {
-  // get issue id
-  var projectId = 0;
-
-  //on issue page
-  if (matchPage('controller-issues', 'action-show')) {
-    projectId = $('#issue_project_id option[selected="selected"]').val();
-  }
-
-  //on time log page
-  if (matchPage('controller-timelog', 'action-new')) {
-    projectId = $('#time_entry_project_id').val();
-  }
-
-  console.log('project id recognized: ' + projectId);
-  return projectId;
-}
-
-
-function getIssueId() {
-  // get issue id
-  var issueId = 0;
-
-  //on issue page
-  if (matchPage('controller-issues', 'action-show')) {
-    if ($('h2').eq(0).text().match(/^.+\#([0-9]+)/)) {
-      issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
-    }
-  }
-
-  //on time log page
-  if (matchPage('controller-timelog', 'action-new')) {
-    if ($('input[name="back_url"]').attr('value').match(/^.+issues\/([0-9]+)\/?$/)) {
-      issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
-    }
-  }
-
-  console.log('issue id recognized: ' + issueId);
-  return issueId;
-}
-
-function getUserId() {
-  var userId = /users\/([0-9]+)$/.exec($('#loggedas a').attr('href')).pop();
-  console.log('user id recognized: ' + userId);
-
-  return userId;
-}
-
-
-/* sidebar toggling */
-function showSidebar() {
-  $('#sidebar').show();
-  $('button.toggleSidebar').html('&times;');
-  $('#main').removeClass('nosidebar');
-}
-function hideSidebar() {
-  $('#sidebar').hide();
-  $('button.toggleSidebar').html('&larr;');
-  $('#main').addClass('nosidebar');
-}
-
-/* working with alternate contents */
-function setDefaultCellContentDataAttribute(cells) {
-  $(cells).each(function() {
-    $(this).data('VAL' + 'defaultValue', $(this).text());
-    $(this).attr('title', $(this).text());
-    $(this).data('currentlyViewed', 'defaultValue');
-  });
-
-  $(cells).click(function() {
-    toggleAlternateCellContents(cells);
-  });
-}
-
-function addAlternateCellContent(cells, valueName, procedure) {
-  $(cells).each(function() {
-    $(this).data('VAL' + valueName, procedure($(this).text()));
-  });
-}
-
-function showAlternateCellContent(cells, valueName) {
-  $(cells).each(function() {
-    $(this).html($(this).data('VAL' + valueName));
-    $(this).data('currentlyViewed', valueName);
-  });
-
-  $.cookie(cells, valueName, { expires: 7, path: '/' });
-}
-
-function toggleAlternateCellContents(cells) {
-  cell = $(cells).first();
-
-  var data = cell.data();
-  var variants = [];
-  for (var param in data) {
-    if (param.indexOf('VAL') === 0) variants.push(param.substring(3));
-  }
-
-  currentViewPosition = $.inArray(cell.data('currentlyViewed'), variants);
-  nextViewPosition = (currentViewPosition < variants.length - 1) ? currentViewPosition + 1 : 0;
-  showAlternateCellContent(cells, variants[nextViewPosition]);
-}
-
-
-function createStatusIcon(value) {
-  // table cell alternate content creators
-  var statusReplacements = {
-    'Nový / New' : ['file'],
-    'Přiřazený / Assigned' : ['user'],
-    'Vyřešený / Solved' : ['ok'],
-    'Feedback' : ['comment'],
-    'Čeká se / Waiting' : ['refresh'],
-    'Odložený / Postponed' : ['stop'],
-    'Čeká na klienta' : ['eye-open'],
-    'Uzavřený / Closed' : ['home'],
-    'Odmítnutý / Rejected' : ['ban-circle'],
-    'Needs explanation' : ['question-sign'],
-    'Needs design' : ['picture'],
-    'Refused' : ['ban-circle'],
-    'Needs estimation' : ['time'],
-    'Needs estimation approval' : ['time', 'ok-sign'],
-    'Needs implementation' : ['thumbs-up'],
-    'Needs code review' : ['th-list'],
-    'Needs deployment' : ['upload'],
-    'Needs review' : ['eye-open'],
-    'Closed' : ['home']
-  };
-
-  replacementCell = '';
-
-  for (var i = 0; i < statusReplacements[value].length; i++) {
-    replacementCell += '<i class="bootstrap-icon-'+statusReplacements[value][i]+'"></i>';
-  }
-
-  return replacementCell;
-}
-
-function highlightNew(value) {
-  if (value == 'Nový / New') {
-    return '<b style="color: red">' + value + '</b>';
-  } else return value;
-}
-
-
-var weekday = new Array(7);
-weekday[0] = "Sunday";
-weekday[1] = "Monday";
-weekday[2] = "Tuesday";
-weekday[3] = "Wednesday";
-weekday[4] = "Thursday";
-weekday[5] = "Friday";
-weekday[6] = "Saturday";
-
-function createVerbalDate(value) {
-  if (!value) return '';
-  else {
-      var date = dateFromRedmineString(value);
-      var daysCount = daysFromToday(date);
-      var textualDueDate = '';
-
-      switch (daysCount) {
-        case 0:
-          textualDueDate = 'Yesterday';
-          break;
-        case 1:
-          textualDueDate = /* 'Today' + */ createRelativeTime(value);
-          break;
-        case 2:
-          textualDueDate = 'Tomorrow';
-          break;
-        case 3:
-        case 4:
-        case 5:
-          textualDueDate = weekday[date.getDay()].substring(0,3) + ' ' + date.getDate() + '. ' + (date.getMonth()+1) + '.';
-          break;
-        default:
-          textualDueDate = date.getDate() + '. ' + (date.getMonth()+1) + '.';
-      }
-
-      if (date < new Date()) {
-        return '<b style="color: red">' + date.toRelativeTime(new Date(), 5000, true) + '</b>';
-      }
-
-      return textualDueDate;
-  }
-}
-
-function createRelativeTime(value) {
-  if (!value) return '';
-  var date = dateFromRedmineString(value);
-  return date.toRelativeTime(new Date(), 5000, true);
-}
-
-function createShortIssueType(value) {
-  if (value == 'Požadavek') { return '<span style="opacity:.4">&fnof;</span>'; }
-  if (value == 'Feature Request') { return '<span style="opacity:.4">&fnof;</span>'; }
-  else { return value; }
-}
-
-
-/* hiding elements in a form - all are embedded in a paragraph */
-/*function hideFormElement(id) {
-  $(id).closest('p').hide();
-}
-function hideFormElements(ids) {
-  $.each(ids, function(index, value) {
-    hideFormElement(value);
-  });
-}
-function showFormElement(id) {
-  $(id).closest('p').show();
-}
-function showFormElements(ids) {
-  $.each(ids, function(index, value) {
-    showFormElement(value);
-  });
-}
-function toggleFormElements(groupName, ids, button, buttonStates) {
-  if ($(ids[0]).closest('p').is(':visible')) {
-    hideFormElements(ids);
-    button.html(buttonStates[1]);
-    $.cookie(groupName + 'Minimized', true, { expires: 7, path: '/' });
-  } else {
-    showFormElements(ids);
-    button.html(buttonStates[0]);
-    $.removeCookie(groupName + 'Minimized', { expires: 7, path: '/' });
-
-  }
-}*/
-function toggleFormFolding(groupName, button, buttonStates) {
-  if (!$('#update').hasClass(groupName + 'Minimized')) {
-    $('#update').addClass(groupName + 'Minimized');
-    button.html('<i class="bootstrap-icon-plus"></i>');
-    $.cookie(groupName + 'Minimized', true, { expires: 7, path: '/' });
-  } else {
-    $('#update').removeClass(groupName + 'Minimized');
-    button.html('<i class="bootstrap-icon-minus"></i>');
-    $.removeCookie(groupName + 'Minimized', { expires: 7, path: '/' });
-  }
-}
-
-
-
-
-
-
-
-function dateFromRedmineString(issueDate) {
-  issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
-
-  var year = issueDateArray[0];
-  var month = issueDateArray[1]-1;
-  var day = issueDateArray[2];
-  var hours = issueDateArray[3] ? issueDateArray[3] : 12;
-  var minutes = issueDateArray[4] ? issueDateArray[4] : 0;
-
-  return new Date(year, month, day, hours, minutes);
-}
-
-function assessUsedLanguage() {
-  var lang;
-  var homeLinkText = $('#top-menu a.home').text();
-  if (homeLinkText == 'Úvodní') {
-    lang = 'cs';
-  } else lang = 'en';
-
-  console.log('used language recognized: ' + lang);
-  return lang;
-}
-
+//    ##       #### ########   ######
+//    ##        ##  ##     ## ##    ##
+//    ##        ##  ##     ## ##
+//    ##        ##  ########   ######
+//    ##        ##  ##     ##       ##
+//    ##        ##  ##     ## ##    ##
+//    ######## #### ########   ######
 
 // http://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
 Date.prototype.yyyymmdd = function() {
@@ -567,7 +610,6 @@ function daysFromToday(date) {
     return Math.round(difference_ms/ONE_DAY) + 1;
 
 }
-
 
 //http://stackoverflow.com/questions/848797/yellow-fade-effect-with-jquery/13106698#13106698
 jQuery.fn.highlight = function () {
@@ -726,11 +768,6 @@ jQuery.fn.highlight = function () {
 Date.fromString = function(str) {
   return new Date(Date.parse(str));
 };
-
-
-
-
-
 
 
 /*!
