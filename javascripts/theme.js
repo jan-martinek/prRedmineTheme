@@ -49,7 +49,7 @@ var ProofReasonRedmineTheme = {
     matchPage: function (controller, action) {
       var body = $('body');
 
-      if (body.hasClass(controller) && body.hasClass(action)) {
+      if (body.hasClass('controller-' + controller) && body.hasClass('action-' + action)) {
         return true;
       }
 
@@ -58,11 +58,11 @@ var ProofReasonRedmineTheme = {
 
     getProjectId: function() {
       if (this.projectId === null) {
-        if (this.matchPage('controller-issues', 'action-show')) {
+        if (this.matchPage('issues', 'show')) {
           this.projectId = $('#issue_project_id option[selected="selected"]').val();
         }
 
-        if (this.matchPage('controller-timelog', 'action-new')) {
+        if (this.matchPage('timelog', 'new')) {
           this.projectId = $('#time_entry_project_id').val();
         }
 
@@ -74,13 +74,13 @@ var ProofReasonRedmineTheme = {
     getIssueId: function() {
       if (this.issueId === null) {
 
-        if (this.matchPage('controller-issues', 'action-show')) {
+        if (this.matchPage('issues', 'show')) {
           if ($('h2').eq(0).text().match(/^.+\#([0-9]+)/)) {
             this.issueId = /^.+\#([0-9]+)/.exec($('h2').eq(0).text()).pop();
           }
         }
 
-        if (this.matchPage('controller-timelog', 'action-new')) {
+        if (this.matchPage('timelog', 'new')) {
           if ($('input[name="back_url"]').attr('value').match(/^.+issues\/([0-9]+)\/?$/)) {
             this.issueId = /^.+issues\/([0-9]+)\/?$/.exec($('input[name="back_url"]').attr('value')).pop();
           }
@@ -340,11 +340,11 @@ var ProofReasonRedmineTheme = {
 
       var timeySwitch = '<a class="timeySwitch" href="#">logovat v Timey</a>';
 
-      if (this.ppm.matchPage('controller-timelog', 'action-new')) {
+      if (this.ppm.matchPage('timelog', 'new')) {
         $('#new_time_entry').prepend(timeySwitch);
       }
 
-      if (this.ppm.matchPage('controller-issues', 'action-show')) {
+      if (this.ppm.matchPage('issues', 'show')) {
         $('.tabular.timeLogging').prepend(timeySwitch);
       }
 
@@ -369,11 +369,11 @@ var ProofReasonRedmineTheme = {
       url+
       //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
       '"></iframe></div>';
-      if (this.ppm.matchPage('controller-timelog', 'action-new')) {
+      if (this.ppm.matchPage('timelog', 'new')) {
         $('#new_time_entry').after(timeyLogger);
         $('#new_time_entry').hide();
       }
-      if (this.ppm.matchPage('controller-issues', 'action-show')) {
+      if (this.ppm.matchPage('issues', 'show')) {
         $('.tabular.timeLogging').append(timeyLogger);
         $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
       }
