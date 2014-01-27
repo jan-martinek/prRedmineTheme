@@ -1,6 +1,5 @@
 var ProofReasonRedmineTheme = {
   init: function() {
-    this.ZenMode.init();
     this.BetterHeader.init();
     this.BetterSidebar.init();
     this.BetterUpdateForm.init();
@@ -8,6 +7,7 @@ var ProofReasonRedmineTheme = {
     this.BetterTimeline.init();
     //AutoReturnToOwner.init(); disabled, timeout solution is not reliable
     this.AlternateCellFormats.init();
+    this.ZenMode.init();
   },
 
   tools: {
@@ -24,10 +24,10 @@ var ProofReasonRedmineTheme = {
     },
 
     cookie: function(key, value) {
-      if (value) {
-        return $.cookie('theme.' + key, value, { expires: 5, path: '/' });
-      } else {
+      if (value === undefined) {
         return $.cookie('theme.' + key);
+      } else {
+        return $.cookie('theme.' + key, value, { expires: 5, path: '/' });
       }
     },
 
