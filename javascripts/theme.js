@@ -8,6 +8,7 @@ var ProofReasonRedmineTheme = {
     //AutoReturnToOwner.init(); disabled, timeout solution is not reliable
     this.AlternateCellFormats.init();
     this.ZenMode.init();
+    this.AbsencesViewer.init();
   },
 
   tools: {
@@ -552,6 +553,86 @@ var ProofReasonRedmineTheme = {
         return false;
       });
     }
+  },
+
+  AbsencesViewer: {
+    absences: null,
+
+    init: function() {
+      if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('controller-welcome', 'action-index')) {
+        this.getAbsencesData();
+      }
+    },
+
+    viewAbsences: function() {
+      var output = '';
+
+      this.absences.forEach(function(month) {
+        if (month.people.length) {
+          output += '<h4 style="margin: 10px 0 0">' + month.name + '</h4><ul>';
+
+          month.people.forEach(function(person) {
+            output += '<li style="margin: 0px 0;"><b>' + person.name + '</b>: ' + person.absences.join('., ').replace('-', '.—') + '.</li>';
+          });
+
+          output += '</ul>';
+        }
+      });
+
+      $('div.projects.box').append('<h3 style="margin-top: 30px">Plánované nepřítomnosti</h3>' + output);
+    },
+
+    getAbsencesData: function() {
+      this.absences = [];
+
+      $.get('/projects/pm/wiki/Holidays', function(data) {
+        AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
+
+        data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
+          if (tableNumber > 0) {
+            var month = {'name' : null, 'people' : []};
+            var lastDayOfTheMonth = AbsencesViewer.getLastDayOfTheMonth(table);
+
+            table.split(/\s+<tr>\s+/).forEach(function(row, rowNumber) {
+              if (rowNumber == 0) {
+                month.name = row.match(/<strong>([^<]+)</);
+                month.name = month.name[1];
+              }
+              else if (rowNumber > 3) {
+                var holidays = [];
+                for (i = 1; i <= lastDayOfTheMonth; i++) { //TODO: assess max day number
+                  if (row.indexOf('>' + i + '.') == -1) {
+                    holidays.push(i);
+                  }
+                }
+
+                if (holidays.length) {
+                  holidays = getRanges(holidays);
+
+                  var name = row.match(/^<td>([^<]+)</);
+                  name = name[1];
+
+                  month.people.push({'name' : name, 'absences' : holidays});
+                }
+              }
+            });
+            AbsencesViewer.absences.push(month);
+          }
+        });
+        AbsencesViewer.viewAbsences();
+      });
+
+    },
+
+    getLastDayOfTheMonth: function(table) {
+      var lastDayOfTheMonth = null;
+      if (table.indexOf('31.') != -1) lastDayOfTheMonth = 31;
+      else if (table.indexOf('30.') != -1) lastDayOfTheMonth = 30;
+      else if (table.indexOf('29.') != -1) lastDayOfTheMonth = 29;
+      else if (table.indexOf('28.') != -1) lastDayOfTheMonth = 28;
+      else console.log('Last day of the month could not be assesed.');
+      return lastDayOfTheMonth;
+    }
   }
 }
 
@@ -572,6 +653,27 @@ $(document).ready(function() {
 //    ##        ##  ##     ##       ##
 //    ##        ##  ##     ## ##    ##
 //    ######## #### ########   ######
+
+// http://stackoverflow.com/questions/2270910/how-to-convert-sequence-of-numbers-in-an-array-to-range-of-numbers
+function getRanges(array) {
+  var ranges = [], rstart, rend;
+  for (var i = 0; i < array.length; i++) {
+    rstart = array[i];
+    rend = rstart;
+    while (array[i + 1] - array[i] == 1) {
+      rend = array[i + 1]; // increment the index if the numbers sequential
+      i++;
+    }
+    ranges.push(rstart == rend ? rstart+'' : rstart + '-' + rend);
+  }
+  return ranges;
+}
+
+
+// http://stackoverflow.com/questions/1810984/number-of-days-in-any-month
+function getDaysInMonth(m, y) {
+   return /8|3|5|10/.test(--m)?30:m==1?(!(y%4)&&y%100)||!(y%400)?29:28:31;
+}
 
 // http://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
 Date.prototype.yyyymmdd = function() {
