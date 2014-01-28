@@ -613,7 +613,7 @@ var ProofReasonRedmineTheme = {
           data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
             if (tableNumber > 0) {
               var month = {'name' : null, 'people' : []};
-              var lastDayOfTheMonth = AbsencesViewer.getLastDayOfTheMonth(table);
+              var lastDayOfTheMonth = AbsencesViewer.findLastDayOfTheMonth(table);
 
               table.split(/\s+<tr>\s+/).forEach(function(row, rowNumber) {
                 if (rowNumber == 0) {
@@ -622,7 +622,7 @@ var ProofReasonRedmineTheme = {
                 }
                 else if (rowNumber > 3) {
                   var holidays = [];
-                  for (i = 1; i <= lastDayOfTheMonth; i++) { //TODO: assess max day number
+                  for (i = 1; i <= lastDayOfTheMonth; i++) {
                     if (row.indexOf('>' + i + '.') == -1) {
                       holidays.push(i);
                     }
@@ -648,14 +648,15 @@ var ProofReasonRedmineTheme = {
       });
     },
 
-    getLastDayOfTheMonth: function(table) {
-      var lastDayOfTheMonth = null;
-      if (table.indexOf('31.') != -1) lastDayOfTheMonth = 31;
-      else if (table.indexOf('30.') != -1) lastDayOfTheMonth = 30;
-      else if (table.indexOf('29.') != -1) lastDayOfTheMonth = 29;
-      else if (table.indexOf('28.') != -1) lastDayOfTheMonth = 28;
-      else console.log('Last day of the month could not be assesed.');
-      return lastDayOfTheMonth;
+    findLastDayOfTheMonth: function(table) {
+
+      for (dayNumber = 31; dayNumber >= 28; dayNumber--) {
+        if (table.indexOf(dayNumber + '.</td') != '-1') {
+          return dayNumber;
+        }
+      }
+
+      console.log('Last day of the month could not be assesed.');
     }
   }
 }
@@ -677,6 +678,7 @@ $(document).ready(function() {
 //    ##        ##  ##     ##       ##
 //    ##        ##  ##     ## ##    ##
 //    ######## #### ########   ######
+
 
 // http://stackoverflow.com/questions/2270910/how-to-convert-sequence-of-numbers-in-an-array-to-range-of-numbers
 function getRanges(array) {
