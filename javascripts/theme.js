@@ -567,7 +567,7 @@ var ProofReasonRedmineTheme = {
         'holidays.html' : // test
         '/projects/pm/wiki/Holidays'; // production
 
-      if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('controller-welcome', 'action-index')) {
+      if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('welcome', 'index')) {
         if ($.cookie('theme.absences')) {
           this.htmlOutput = $.cookie('theme.absences');
           this.putHtmlIntoDocument();
