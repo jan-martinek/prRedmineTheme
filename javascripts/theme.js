@@ -577,13 +577,20 @@ var ProofReasonRedmineTheme = {
     htmlOutput: null,
 
     init: function() {
-      $('div.projects.box').after('<div id="plannedAbsences"></div>');
-
       this.absencesInfoUrl = window.location.hostname == 'localhost' ?
-        'holidays.html' : // test
-        '/projects/pm/wiki/Holidays'; // production
+      'holidays.html' : // test
+      '/projects/pm/wiki/Holidays'; // production
+
 
       if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('welcome', 'index')) {
+        $('div.projects.box').after('<div id="plannedAbsences"></div>');
+      }
+
+      if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('issues', 'index')) {
+        $('#sidebar').append('<div id="plannedAbsences"></div>');
+      }
+
+      if ($('#plannedAbsences').length) {
         if (ProofReasonRedmineTheme.tools.cookie('absences')) {
           this.htmlOutput = ProofReasonRedmineTheme.tools.cookie('absences');
           this.putHtmlIntoDocument();
