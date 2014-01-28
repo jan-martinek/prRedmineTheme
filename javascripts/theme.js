@@ -557,14 +557,28 @@ var ProofReasonRedmineTheme = {
 
   AbsencesViewer: {
     absences: null,
+    absencesInfoUrl: null,
+    htmlOutput: null,
 
     init: function() {
+      $('div.projects.box').after('<div id="plannedAbsences"></div>');
+
+      this.absencesInfoUrl = window.location.hostname == 'localhost' ?
+        'holidays.html' : // test
+        '/projects/pm/wiki/Holidays'; // production
+
       if (ProofReasonRedmineTheme.PagePropertyMiner.matchPage('controller-welcome', 'action-index')) {
-        this.getAbsencesData();
+        if ($.cookie('theme.absences')) {
+          this.htmlOutput = $.cookie('theme.absences');
+          this.putHtmlIntoDocument();
+        } else {
+          this.loadAbsencesData();
+        }
+
       }
     },
 
-    viewAbsences: function() {
+    createHtml: function() {
       var output = '';
 
       this.absences.forEach(function(month) {
@@ -579,49 +593,59 @@ var ProofReasonRedmineTheme = {
         }
       });
 
-      $('div.projects.box').append('<h3 style="margin-top: 30px">Plánované nepřítomnosti</h3>' + output);
+      $.cookie('theme.absences', output, { expires: 1, path: '/' });
+      this.htmlOutput = output;
     },
 
-    getAbsencesData: function() {
+    putHtmlIntoDocument: function() {
+      $('#plannedAbsences').html('<h3 style="margin-top: 30px">Planned absences (<a href="javascript:ProofReasonRedmineTheme.AbsencesViewer.loadAbsencesData()">refresh</a>)</h3>' +
+        this.htmlOutput + '<p><a href="' + this.absencesInfoUrl + '">Zobrazit detaily</a></p>');
+    },
+
+    loadAbsencesData: function() {
       this.absences = [];
 
-      $.get('/projects/pm/wiki/Holidays', function(data) {
-        AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
+      $.ajax({
+        url: this.absencesInfoUrl,
+        success: function(data) {
+          AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
 
-        data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
-          if (tableNumber > 0) {
-            var month = {'name' : null, 'people' : []};
-            var lastDayOfTheMonth = AbsencesViewer.getLastDayOfTheMonth(table);
+          data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
+            if (tableNumber > 0) {
+              var month = {'name' : null, 'people' : []};
+              var lastDayOfTheMonth = AbsencesViewer.getLastDayOfTheMonth(table);
 
-            table.split(/\s+<tr>\s+/).forEach(function(row, rowNumber) {
-              if (rowNumber == 0) {
-                month.name = row.match(/<strong>([^<]+)</);
-                month.name = month.name[1];
-              }
-              else if (rowNumber > 3) {
-                var holidays = [];
-                for (i = 1; i <= lastDayOfTheMonth; i++) { //TODO: assess max day number
-                  if (row.indexOf('>' + i + '.') == -1) {
-                    holidays.push(i);
+              table.split(/\s+<tr>\s+/).forEach(function(row, rowNumber) {
+                if (rowNumber == 0) {
+                  month.name = row.match(/<strong>([^<]+)</);
+                  month.name = month.name[1];
+                }
+                else if (rowNumber > 3) {
+                  var holidays = [];
+                  for (i = 1; i <= lastDayOfTheMonth; i++) { //TODO: assess max day number
+                    if (row.indexOf('>' + i + '.') == -1) {
+                      holidays.push(i);
+                    }
+                  }
+
+                  if (holidays.length) {
+                    holidays = getRanges(holidays);
+
+                    var name = row.match(/^<td>([^<]+)</);
+                    name = name[1];
+
+                    month.people.push({'name' : name, 'absences' : holidays});
                   }
                 }
-
-                if (holidays.length) {
-                  holidays = getRanges(holidays);
-
-                  var name = row.match(/^<td>([^<]+)</);
-                  name = name[1];
-
-                  month.people.push({'name' : name, 'absences' : holidays});
-                }
-              }
-            });
-            AbsencesViewer.absences.push(month);
-          }
-        });
-        AbsencesViewer.viewAbsences();
+              });
+              AbsencesViewer.absences.push(month);
+            }
+          });
+          AbsencesViewer.createHtml();
+          AbsencesViewer.putHtmlIntoDocument();
+        },
+        cache: false
       });
-
     },
 
     getLastDayOfTheMonth: function(table) {
