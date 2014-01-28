@@ -410,6 +410,7 @@ var ProofReasonRedmineTheme = {
       this.setFormatUp('table.issues .tracker', {'shortIssueType' : this.format.shortIssueType});
 
       // Short titles
+      $('table.issues th[title="Sort by \"Priority\""] a').html('P');
       $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
       $('table.issues th[title="Sort by \"Estimated time\""] a').html('Estimate');
     },
