@@ -408,7 +408,10 @@ var ProofReasonRedmineTheme = {
         'statusIcon' : this.format.statusIcon
       });
       this.setFormatUp('table.issues .tracker', {'shortIssueType' : this.format.shortIssueType});
+
+      // Short titles
       $('table.issues th[title="Sort by \"Tracker\""] a').html('Type');
+      $('table.issues th[title="Sort by \"Estimated time\""] a').html('Estimate');
     },
 
     setFormatUp: function(cellSelector, alternateFormats, originalFormat) {
