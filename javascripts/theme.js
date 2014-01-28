@@ -630,11 +630,8 @@ var ProofReasonRedmineTheme = {
 
                   if (holidays.length) {
                     holidays = getRanges(holidays);
-
                     var name = row.match(/^<td>([^<]+)</);
-                    name = name[1];
-
-                    month.people.push({'name' : name, 'absences' : holidays});
+                    month.people.push({'name' : name[1], 'absences' : holidays});
                   }
                 }
               });
