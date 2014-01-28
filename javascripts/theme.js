@@ -502,7 +502,7 @@ var ProofReasonRedmineTheme = {
                 textualDueDate = 'Yesterday';
                 break;
               case 1:
-                textualDueDate = relativeTime(value);
+                textualDueDate = ProofReasonRedmineTheme.AlternateCellFormats.format.relativeTime(value);
                 break;
               case 2:
                 textualDueDate = 'Tomorrow';
