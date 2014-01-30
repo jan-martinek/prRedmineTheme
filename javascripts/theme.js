@@ -1,3 +1,5 @@
+"use strict";
+
 var ProofReasonRedmineTheme = {
   init: function() {
     this.BetterHeader.init();
@@ -14,7 +16,7 @@ var ProofReasonRedmineTheme = {
 
   tools: {
     dateFromRedmineString: function(issueDate) {
-      issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
+      var issueDateArray = issueDate.replace(" ", '-').replace(":", '-').split("-");
 
       var year = issueDateArray[0];
       var month = issueDateArray[1]-1;
@@ -418,7 +420,7 @@ var ProofReasonRedmineTheme = {
 
     setFormatUp: function(cellSelector, alternateFormats, originalFormat) {
       this.prepareCells(cellSelector);
-      for (format in alternateFormats) {
+      for (var format in alternateFormats) {
         this.addAlternateFormat(cellSelector, format, alternateFormats[format]);
 
         if (originalFormat == null) {
@@ -509,7 +511,7 @@ var ProofReasonRedmineTheme = {
           'Needs deployment' : ['green']
         };
 
-        replacementCell = '';
+        var replacementCell = '';
 
         for (var i = 0; i < statusReplacements[value].length; i++) {
           var icon = statusReplacements[value][i];
@@ -654,7 +656,7 @@ var ProofReasonRedmineTheme = {
       $.ajax({
         url: this.absencesInfoUrl,
         success: function(data) {
-          AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
+          var AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
 
           data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
             if (tableNumber > 0) {
@@ -668,7 +670,7 @@ var ProofReasonRedmineTheme = {
                 }
                 else if (rowNumber > 3) {
                   var holidays = [];
-                  for (i = 1; i <= lastDayOfTheMonth; i++) {
+                  for (var i = 1; i <= lastDayOfTheMonth; i++) {
                     if (row.indexOf('>' + i + '.') == -1) {
                       holidays.push(i);
                     }
@@ -693,7 +695,7 @@ var ProofReasonRedmineTheme = {
 
     findLastDayOfTheMonth: function(table) {
 
-      for (dayNumber = 31; dayNumber >= 28; dayNumber--) {
+      for (var dayNumber = 31; dayNumber >= 28; dayNumber--) {
         if (table.indexOf(dayNumber + '.</td') != '-1') {
           return dayNumber;
         }
