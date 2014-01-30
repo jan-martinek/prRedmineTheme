@@ -7,8 +7,9 @@ var ProofReasonRedmineTheme = {
     this.BetterTimeline.init();
     //AutoReturnToOwner.init(); disabled, timeout solution is not reliable
     this.AlternateCellFormats.init();
-    this.ZenMode.init();
     this.AbsencesViewer.init();
+    this.BetterIssuesContextualMenu.init();
+    this.ZenMode.init();
   },
 
   tools: {
@@ -681,6 +682,16 @@ var ProofReasonRedmineTheme = {
       }
 
       console.log('Last day of the month could not be assesed.');
+    }
+  },
+
+  BetterIssuesContextualMenu: {
+    init: function() {
+      var menu = document.getElementById('context-menu');
+      if (menu) {
+        menu.parentNode.removeChild(menu);
+        document.body.appendChild(menu);
+      }
     }
   }
 }
