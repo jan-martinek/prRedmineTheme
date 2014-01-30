@@ -60,7 +60,7 @@ var ProofReasonRedmineTheme = {
 
   PagePropertyMiner: {
     projectId: null,
-    issuedId: null,
+    issueId: null,
     userId: null,
     lang: null,
 
