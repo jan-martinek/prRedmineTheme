@@ -5,7 +5,7 @@ var ProofReasonRedmineTheme = {
     this.BetterUpdateForm.init();
     this.TimeyIntegration.init();
     this.BetterTimeline.init();
-    //AutoReturnToOwner.init(); disabled, timeout solution is not reliable
+    this.AutoReturnToOwner.init();
     this.AlternateCellFormats.init();
     this.AbsencesViewer.init();
     this.BetterIssuesContextualMenu.init();
@@ -303,25 +303,31 @@ var ProofReasonRedmineTheme = {
   AutoReturnToOwner: {
     init: function() {
       // return closed ticket to its author ans set closing time automatically where possible
-      // not really elegant solution with timeout, may fail when ajax request is not fast enough
 
-      $('#all_attributes').on('change','select#issue_status_id',  function() {
-        if ($(this).val() == 3) { // Solved
+      var $allAttributes = $('#all_attributes');
+      $allAttributes.on('change','select#issue_status_id',  function() {
+        var value = $(this).val();
+        if (value == 3) { // Solved
           var author = $('p.author a').first().attr('href').substring(7);
-          setTimeout(function() {
-            $('select#issue_assigned_to_id').val(author);
-            $('select#issue_assigned_to_id').prev('label').highlight();
-          }, 500);
-        }
 
-        if ($(this).val() == 17 || $(this).val() == 5) { // Closed (on baufinder) OR Closed anywhere else
-          setTimeout(function() {
-            if ($('#issue_custom_field_values_24').size() > 0) {
-                var date = new Date();
-                $('#issue_custom_field_values_24').val(date.yyyymmdd());
-                $('#issue_custom_field_values_24').prev('label').highlight();
+            $allAttributes.one('DOMSubtreeModified', function() {
+              console.debug('All attributes DOMSubtreeModified event.');
+
+              var $issueAssignedToId = $('select#issue_assigned_to_id');
+              $issueAssignedToId.val(author);
+              $issueAssignedToId.prev('label').highlight();
+            });
+        
+        } else if (value == 17 || value == 5) { // Closed (on baufinder) OR Closed anywhere else
+          $allAttributes.one('DOMSubtreeModified', function() {
+            console.debug('All attributes DOMSubtreeModified event.');
+
+            var $issueCustomFieldValues24 = $('#issue_custom_field_values_24');
+            if ($issueCustomFieldValues24.size() > 0) {
+              $issueCustomFieldValues24.val((new Date).yyyymmdd());
+              $issueCustomFieldValues24.prev('label').highlight();
             }
-          }, 500);
+          });
         }
       });
     }
