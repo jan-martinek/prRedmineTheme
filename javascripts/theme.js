@@ -494,26 +494,19 @@ var ProofReasonRedmineTheme = {
           'Closed' : ['home']
         };
 
+        // green = work; blue = talk; red = new/accept; gray = outside/no action
         var statusReplacementColors = {
           'Nový / New' : ['red'],
-          //'Přiřazený / Assigned' : ['green']
-          //'Vyřešený / Solved' : ['ok'],
-          //'Feedback' : ['comment'],
-          //'Čeká se / Waiting' : ['refresh'],
-          //'Odložený / Postponed' : ['stop'],
-          //'Čeká na klienta' : ['eye-open'],
-          //'Uzavřený / Closed' : ['home'],
-          //'Odmítnutý / Rejected' : ['ban-circle'],
-          //'Needs explanation' : ['question-sign'],
-          //'Needs design' : ['picture'],
+          'Přiřazený / Assigned' : ['green'],
+          'Vyřešený / Solved' : ['blue'],
+          'Feedback' : ['blue'],
+          'Needs explanation' : ['blue'],
+          'Needs design' : ['green'],
           'Refused' : ['red'],
-          //'Needs estimation' : ['time'],
-          //'Needs estimation approval' : ['time', 'ok-sign'],
-          //'Needs implementation' : ['thumbs-up'],
-          //'Needs code review' : ['th-list'],
-          //'Needs deployment' : ['upload'],
-          //'Needs review' : ['eye-open'],
-          //'Closed' : ['home']
+          'Needs estimation' : ['blue'],
+          'Needs implementation' : ['green'],
+          'Needs code review' : ['blue'],
+          'Needs deployment' : ['green']
         };
 
         replacementCell = '';
