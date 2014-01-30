@@ -473,8 +473,8 @@ var ProofReasonRedmineTheme = {
       statusIcon: function(value) {
         // table cell alternate content creators
         var statusReplacements = {
-          'Nový / New' : ['file'],
-          'Přiřazený / Assigned' : ['user'],
+          'Nový / New' : ['inbox'],
+          'Přiřazený / Assigned' : ['arrow-right'],
           'Vyřešený / Solved' : ['ok'],
           'Feedback' : ['comment'],
           'Čeká se / Waiting' : ['refresh'],
@@ -486,18 +486,43 @@ var ProofReasonRedmineTheme = {
           'Needs design' : ['picture'],
           'Refused' : ['ban-circle'],
           'Needs estimation' : ['time'],
-          'Needs estimation approval' : ['time', 'ok-sign'],
-          'Needs implementation' : ['thumbs-up'],
+          'Needs estimation approval' : ['question-sign'],
+          'Needs implementation' : ['arrow-right'],
           'Needs code review' : ['th-list'],
           'Needs deployment' : ['upload'],
           'Needs review' : ['eye-open'],
           'Closed' : ['home']
         };
 
+        var statusReplacementColors = {
+          'Nový / New' : ['red'],
+          //'Přiřazený / Assigned' : ['green']
+          //'Vyřešený / Solved' : ['ok'],
+          //'Feedback' : ['comment'],
+          //'Čeká se / Waiting' : ['refresh'],
+          //'Odložený / Postponed' : ['stop'],
+          //'Čeká na klienta' : ['eye-open'],
+          //'Uzavřený / Closed' : ['home'],
+          //'Odmítnutý / Rejected' : ['ban-circle'],
+          //'Needs explanation' : ['question-sign'],
+          //'Needs design' : ['picture'],
+          'Refused' : ['red'],
+          //'Needs estimation' : ['time'],
+          //'Needs estimation approval' : ['time', 'ok-sign'],
+          //'Needs implementation' : ['thumbs-up'],
+          //'Needs code review' : ['th-list'],
+          //'Needs deployment' : ['upload'],
+          //'Needs review' : ['eye-open'],
+          //'Closed' : ['home']
+        };
+
         replacementCell = '';
 
         for (var i = 0; i < statusReplacements[value].length; i++) {
-          replacementCell += '<i class="bootstrap-icon-'+statusReplacements[value][i]+'"></i>';
+          var icon = statusReplacements[value][i];
+          var color = statusReplacementColors[value] ? statusReplacementColors[value][i] : null;
+          var colorReplacement = color ? 'style="background-color: '+color+'; border-color: '+color+'"' : '';
+          replacementCell += '<i '+colorReplacement+' class="bootstrap-icon-white bootstrap-icon-'+icon+'"></i>';
         }
 
         return replacementCell;
