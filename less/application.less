@@ -228,6 +228,50 @@ form {
 /* optionally hidden elements */
 #update {
 	&.issueAttributesMinimized {
+		margin-top: 15px;
+		background-color: #f8f8f8;
+
+		h3 {
+			margin: 10px;
+			padding-top: 10px;
+			width: 50%;
+		}
+
+		.issueAttributes {
+			float: right;
+			width: 33%;
+			position: relative;
+			top: 20px;
+		}
+		.issueJournalNotes {
+			float: left:
+			width: 66%;
+		}
+
+		legend { display: none; }
+		.splitcontentleft, .splitcontentright {
+
+			float: none;
+			margin: 0;
+			padding: 0;
+			width: auto;
+
+			p {
+				padding-left: 0;
+			}
+
+			label {
+				display: block;
+			}
+
+			label, input {
+				text-align: left;
+				//display: block;
+				width: auto;
+				float: none;
+				margin-left: 0;
+			}
+		}
 	    .box {
 	    	fieldset:nth-child(1) {
 	    		#all_attributes {
@@ -242,29 +286,24 @@ form {
 	    						}
 	    					}
 		    				.splitcontentright {
-		    					p:nth-child(1), // parent task
-		    					p:nth-child(3), // start date
-		    					p:nth-child(5), // estimated time
-		    					p:nth-child(6) // % done
-		    					{
-		    						display: none;
-		    					}
+		    					p { display: none; }
+		    					p#due_date_area { display: block; }
 		    				}
 		    			}
-		    			.splitcontent:nth-child(2) .splitcontentleft > * {
-		    				display: none; //billedToClient
+		    			.splitcontent:nth-child(2) {
+		    				display: none; //billedToClient, etc.
 		    			}
 	    			}
 	    		}
 	    	}
 	    }
+		.box fieldset:nth-child(2) {
+			display: none;
+		}
+
 	}
 	&.timeLoggingMinimized {
-		.box fieldset:nth-child(2) {
-			& > div, & > p { // everything
-				display: none;
-			}
-		}
+
 	}
 }
 
