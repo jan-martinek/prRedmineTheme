@@ -239,7 +239,7 @@ form {
 	border: 1px solid #ccc;
 	border-radius: 2px;
 	position: absolute;
-	top: 20px; right: 0;
+	top: 25px; right: 0;
 	z-index: 10;
 
 	.bootstrap-icon-minus { display: inline-block }
@@ -327,12 +327,14 @@ form {
 		position: fixed;
 		bottom: 0;
 		left: 0;
+		z-index: 11;
 		width: 100%;
-		-webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
-		box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
+		-webkit-box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+		box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
 
 		span.minimize {
-		//	display: none;
+			top: 10px;
+			right: 10px;
 		}
 
 		.box {
@@ -356,13 +358,13 @@ form {
 			}
 
 			.jstEditor textarea {
-				height: 100px;
+				height: 150px;
 			}
 		}
 }
 
 @media screen and (max-width: 480px) {
-	#update {
+	#update.minimized {
 
 		fieldset {
 			//display: inline;
@@ -393,6 +395,10 @@ form {
 				.jstb_bq, .jstb_unbq {
 					display: inline-block;
 				}
+			}
+
+			.jstEditor textarea {
+				height: 100px;
 			}
 		}
 	}
