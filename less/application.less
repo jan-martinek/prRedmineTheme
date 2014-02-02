@@ -227,90 +227,107 @@ form {
 
 /* optionally hidden elements */
 #update {
-	&.issueAttributesMinimized {
-		margin-top: 15px;
-		background-color: #f8f8f8;
+	position: relative;
+}
 
-		h3 {
-			margin: 10px;
-			padding-top: 10px;
-			width: 50%;
+#update span.minimize {
+	display: block;
+	width: 14px;
+	height: 14px;
+	padding:5px;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	position: absolute;
+	top: 20px; right: 0;
+	z-index: 10;
+
+	.bootstrap-icon-minus { display: inline-block }
+	.bootstrap-icon-plus { display: none; }
+}
+
+#update.minimized {
+	margin-top: 15px;
+
+	span.minimize {
+		.bootstrap-icon-minus { display: none; }
+		.bootstrap-icon-plus { display: inline-block; }
+	}
+
+	.box { background-color: #f8f8f8; }
+	legend { display: none; }
+
+	h3 {
+		margin: 10px;
+		padding-top: 10px;
+		width: 50%;
+	}
+	.issue_private_notes { display: none; }
+
+	.issueAttributes {
+		float: right;
+		width: 33%;
+		position: relative;
+		top: 20px;
+	}
+	.issueJournalNotes {
+		float: left:
+		width: 66%;
+	}
+	.splitcontentleft, .splitcontentright {
+
+		float: none;
+		margin: 0;
+		padding: 0;
+		width: auto;
+
+		p {
+			padding-left: 0;
 		}
 
-		.issueAttributes {
-			float: right;
-			width: 33%;
-			position: relative;
-			top: 20px;
-		}
-		.issueJournalNotes {
-			float: left:
-			width: 66%;
+		label {
+			display: block;
 		}
 
-		legend { display: none; }
-		.splitcontentleft, .splitcontentright {
-
-			float: none;
-			margin: 0;
-			padding: 0;
+		label, input {
+			text-align: left;
+			//display: block;
 			width: auto;
-
-			p {
-				padding-left: 0;
-			}
-
-			label {
-				display: block;
-			}
-
-			label, input {
-				text-align: left;
-				//display: block;
-				width: auto;
-				float: none;
-				margin-left: 0;
-			}
+			float: none;
+			margin-left: 0;
 		}
-	    .box {
-	    	fieldset:nth-child(1) {
-	    		#all_attributes {
-	    			& > p { display: none; } // everything
-	    			#attributes {
-	    				.splitcontent:nth-child(1) {
-	    					.splitcontentleft {
-	    						p:nth-child(4), // category
-	    						p:nth-child(5) // target version
-	    						{
-	    							display: none;
-	    						}
-	    					}
-		    				.splitcontentright {
-		    					p { display: none; }
-		    					p#due_date_area { display: block; }
-		    				}
-		    			}
-		    			.splitcontent:nth-child(2) {
-		    				display: none; //billedToClient, etc.
-		    			}
+	}
+    .box {
+    	fieldset:nth-child(1) {
+    		#all_attributes {
+    			& > p { display: none; } // everything
+    			#attributes {
+    				.splitcontent:nth-child(1) {
+    					.splitcontentleft {
+    						p:nth-child(4), // category
+    						p:nth-child(5) // target version
+    						{
+    							display: none;
+    						}
+    					}
+	    				.splitcontentright {
+	    					p { display: none; }
+	    					p#due_date_area { display: block; }
+	    				}
 	    			}
-	    		}
-	    	}
-	    }
-		.box fieldset:nth-child(2) {
-			display: none;
-		}
-
-	}
-	&.timeLoggingMinimized {
-
+	    			.splitcontent:nth-child(2) {
+	    				display: none; //billedToClient, etc.
+	    			}
+    			}
+    		}
+    	}
+    }
+	.box fieldset:nth-child(2) {
+		display: none;
 	}
 }
 
-button.toggleSidebar:hover, button.minimize:hover {
-
-}
-button.toggleSidebar, button.minimize {
+button.toggleSidebar {
 	position: absolute;
 	top: 10px; right: 10px;
 	z-index: 10;
@@ -334,17 +351,8 @@ button.toggleSidebar, button.minimize {
 	background: transparent;
 	-webkit-appearance: none;
 }
-button.toggleSidebar:hover, button.minimize:hover {
+button.toggleSidebar:hover {
 	border-color: transparent red transparent transparent;
-}
-
-button.minimize {
-	margin: -3px -13px 0; padding: 3px;
-	width: 25px; height: 25px; line-height: 25px;
-	opacity: .9;
-	border: 1px solid #aaa;
-	border-radius: 2px;
-	background: #eee;
 }
 
 

@@ -219,25 +219,15 @@ var ProofReasonRedmineTheme = {
       var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
       var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
 
-      issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-      $('.issueAttributes button.minimize').click(function() {
-        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('issueAttributes', $(this));
+      $('#update').prepend('<span class="minimize"><i class="bootstrap-icon-minus"></i> <i class="bootstrap-icon-plus"></i></span>');
+      $('#update span.minimize').click(function() {
+        ProofReasonRedmineTheme.BetterUpdateForm.toggleUpdateForm();
         return false;
       });
-      if (this.tools.cookie('issueAttributesMinimized')) {
-        $('.issueAttributes button.minimize').click();
-        this.tools.cookie('issueAttributesMinimized', true); // renew expiration
+      if (this.tools.cookie('updateFormMinimized')) {
+        $('#update span.minimize').click();
       }
 
-      timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-      $('.timeLogging button.minimize').click(function() {
-        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('timeLogging', $(this));
-        return false;
-      });
-      if (this.tools.cookie('timeLoggingMinimized')) {
-        $('.timeLogging button.minimize').click();
-        this.tools.cookie('timeLoggingMinimized', true); // renew expiration
-      }
 
       // floating update textarea
       if ($(window).width() >= 891) {
@@ -287,15 +277,13 @@ var ProofReasonRedmineTheme = {
       }
     },
 
-    toggleFormFolding: function (groupName, button, buttonStates) {
-      if (!$('#update').hasClass(groupName + 'Minimized')) {
-        $('#update').addClass(groupName + 'Minimized');
-        button.html('<i class="bootstrap-icon-plus"></i>');
-        this.tools.cookie(groupName + 'Minimized', true);
+    toggleUpdateForm: function () {
+      if ($('#update').hasClass('minimized')) {
+        $('#update').removeClass('minimized');
+        this.tools.removeCookie('updateFormMinimized');
       } else {
-        $('#update').removeClass(groupName + 'Minimized');
-        button.html('<i class="bootstrap-icon-minus"></i>');
-        this.tools.removeCookie(groupName + 'Minimized');
+        $('#update').addClass('minimized');
+        this.tools.cookie('updateFormMinimized', true);
       }
     }
   },
