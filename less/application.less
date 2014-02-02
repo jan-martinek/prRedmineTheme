@@ -15,7 +15,7 @@ body.controller-welcome #main { border-radius: 2px; margin-top: 0px; }
 #content, #main.nosidebar #content { background: #fff; border: 0; padding-left: 15px; width: auto; padding-right: 300px; }
 #main.nosidebar #content { padding-right: 15px; }
 #sidebar { width: 255px; background: #eee; border: 0; margin-top: -10px; padding: 15px; border-radius: 0 2px 0 2px;}
-#footer { background-color: #112631; border: 0px; }
+#footer { background-color: #112631; border: 0px; padding: 80px 0; }
 
 /* Headers */
 h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
@@ -167,7 +167,7 @@ form {
 
 /* fixed textarea */
 
-@media screen and (min-width: 981px) {
+/*@media screen and (min-width: 981px) {
 	#update a.collapseTextarea {
 		display: none;
 	}
@@ -223,7 +223,7 @@ form {
 			}
 		}
 	}
-}
+}*/
 
 /* optionally hidden elements */
 #update {
@@ -254,6 +254,11 @@ form {
 		.bootstrap-icon-plus { display: inline-block; }
 	}
 
+	fieldset {
+		margin: 0;
+		padding: 0 10px;
+	}
+
 	.box { background-color: #f8f8f8; }
 	legend { display: none; }
 
@@ -265,37 +270,27 @@ form {
 	.issue_private_notes { display: none; }
 
 	.issueAttributes {
-		float: right;
-		width: 33%;
-		position: relative;
-		top: 20px;
+
+		.splitcontentleft, .splitcontentright {
+			display: inline;
+			float: none;
+			width: auto;
+			margin: 0;
+
+			p {
+				padding: 0;
+				display: inline-block;
+				margin: 10px 0;
+			}
+
+			label {
+				display: none;
+			}
+		}
 	}
 	.issueJournalNotes {
 		float: left:
 		width: 66%;
-	}
-	.splitcontentleft, .splitcontentright {
-
-		float: none;
-		margin: 0;
-		padding: 0;
-		width: auto;
-
-		p {
-			padding-left: 0;
-		}
-
-		label {
-			display: block;
-		}
-
-		label, input {
-			text-align: left;
-			//display: block;
-			width: auto;
-			float: none;
-			margin-left: 0;
-		}
 	}
     .box {
     	fieldset:nth-child(1) {
@@ -312,7 +307,7 @@ form {
     					}
 	    				.splitcontentright {
 	    					p { display: none; }
-	    					p#due_date_area { display: block; }
+	    					p#due_date_area { display: inline-block; }
 	    				}
 	    			}
 	    			.splitcontent:nth-child(2) {
@@ -324,6 +319,82 @@ form {
     }
 	.box fieldset:nth-child(2) {
 		display: none;
+	}
+}
+
+#update.minimized //.fixedUpdate
+{
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		-webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
+		box-shadow: 0 0 4px 0 rgba(0, 0, 0, .4);
+
+		span.minimize {
+		//	display: none;
+		}
+
+		.box {
+			margin: 0;
+		}
+
+		h3, form>input, form>a, label[for="issue_private_notes"] {
+			display: none;
+		}
+
+		form>input[name="commit"] {
+			display: block;
+			position: absolute;
+			right: 20px;
+			bottom: 10px;
+		}
+
+		.box {
+			fieldset:nth-child(4) {
+				display: none;
+			}
+
+			.jstEditor textarea {
+				height: 100px;
+			}
+		}
+}
+
+@media screen and (max-width: 480px) {
+	#update {
+
+		fieldset {
+			//display: inline;
+		}
+
+		.box {
+			fieldset:nth-child(1) {
+				.splitcontent:nth-child(1) {
+					.splitcontentleft {
+						p:nth-child(1), // status
+						p:nth-child(2) // priority
+						{
+							display: none;
+						}
+					}
+				}
+			}
+
+			.jstElements {
+				display: block;
+				position: absolute;
+				top: 50px; right: 15px;
+
+				button, span {
+					display: none;
+				}
+
+				.jstb_bq, .jstb_unbq {
+					display: inline-block;
+				}
+			}
+		}
 	}
 }
 
