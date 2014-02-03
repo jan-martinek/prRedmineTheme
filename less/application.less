@@ -15,7 +15,7 @@ body.controller-welcome #main { border-radius: 2px; margin-top: 0px; }
 #content, #main.nosidebar #content { background: #fff; border: 0; padding-left: 15px; width: auto; padding-right: 300px; }
 #main.nosidebar #content { padding-right: 15px; }
 #sidebar { width: 255px; background: #eee; border: 0; margin-top: -10px; padding: 15px; border-radius: 0 2px 0 2px;}
-#footer { background-color: #112631; border: 0px; }
+#footer { background-color: #112631; border: 0px; padding: 80px 0; }
 
 /* Headers */
 h2, h3, h4, .wiki h1, .wiki h2, .wiki h3 { border-bottom: 0px; }
@@ -167,7 +167,7 @@ form {
 
 /* fixed textarea */
 
-@media screen and (min-width: 981px) {
+/*@media screen and (min-width: 981px) {
 	#update a.collapseTextarea {
 		display: none;
 	}
@@ -223,55 +223,188 @@ form {
 			}
 		}
 	}
-}
+}*/
 
 /* optionally hidden elements */
 #update {
-	&.issueAttributesMinimized {
-	    .box {
-	    	fieldset:nth-child(1) {
-	    		#all_attributes {
-	    			& > p { display: none; } // everything
-	    			#attributes {
-	    				.splitcontent:nth-child(1) {
-	    					.splitcontentleft {
-	    						p:nth-child(4), // category
-	    						p:nth-child(5) // target version
-	    						{
-	    							display: none;
-	    						}
-	    					}
-		    				.splitcontentright {
-		    					p:nth-child(1), // parent task
-		    					p:nth-child(3), // start date
-		    					p:nth-child(5), // estimated time
-		    					p:nth-child(6) // % done
-		    					{
-		    						display: none;
-		    					}
-		    				}
-		    			}
-		    			.splitcontent:nth-child(2) .splitcontentleft > * {
-		    				display: none; //billedToClient
-		    			}
-	    			}
-	    		}
-	    	}
-	    }
+	position: relative;
+}
+
+#update span.minimize {
+	display: block;
+	width: 14px;
+	height: 14px;
+	padding:5px;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	position: absolute;
+	top: 25px; right: 0;
+	z-index: 10;
+
+	.bootstrap-icon-minus { display: inline-block }
+	.bootstrap-icon-plus { display: none; }
+}
+
+#update.minimized {
+	margin-top: 15px;
+
+	span.minimize {
+		.bootstrap-icon-minus { display: none; }
+		.bootstrap-icon-plus { display: inline-block; }
 	}
-	&.timeLoggingMinimized {
-		.box fieldset:nth-child(2) {
-			& > div, & > p { // everything
+
+	fieldset {
+		margin: 0;
+		padding: 0 10px;
+	}
+
+	.box { background-color: #f8f8f8; }
+	legend { display: none; }
+
+	h3 {
+		margin: 10px;
+		padding-top: 10px;
+		width: 50%;
+	}
+	.issue_private_notes { display: none; }
+
+	.issueAttributes {
+
+		.splitcontentleft, .splitcontentright {
+			display: inline;
+			float: none;
+			width: auto;
+			margin: 0;
+
+			p {
+				padding: 0;
+				display: inline-block;
+				margin: 10px 0;
+			}
+
+			label {
 				display: none;
+			}
+		}
+	}
+	.issueJournalNotes {
+		float: left:
+		width: 66%;
+	}
+    .box {
+    	fieldset:nth-child(1) {
+    		#all_attributes {
+    			& > p { display: none; } // everything
+    			#attributes {
+    				.splitcontent:nth-child(1) {
+    					.splitcontentleft {
+    						p:nth-child(4), // category
+    						p:nth-child(5) // target version
+    						{
+    							display: none;
+    						}
+    					}
+	    				.splitcontentright {
+	    					p { display: none; }
+	    					p#due_date_area { display: inline-block; }
+	    				}
+	    			}
+	    			.splitcontent:nth-child(2) {
+	    				display: none; //billedToClient, etc.
+	    			}
+    			}
+    		}
+    	}
+    }
+	.box fieldset:nth-child(2) {
+		display: none;
+	}
+}
+
+#update.minimized //.fixedUpdate
+{
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		z-index: 11;
+		width: 100%;
+		-webkit-box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+		box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+
+		span.minimize {
+			top: 10px;
+			right: 10px;
+		}
+
+		.box {
+			margin: 0;
+		}
+
+		h3, form>input, form>a, label[for="issue_private_notes"] {
+			display: none;
+		}
+
+		form>input[name="commit"] {
+			display: block;
+			position: absolute;
+			right: 20px;
+			bottom: 10px;
+		}
+
+		.box {
+			fieldset:nth-child(4) {
+				display: none;
+			}
+
+			.jstEditor textarea {
+				height: 150px;
+			}
+		}
+}
+
+@media screen and (max-width: 480px) {
+	#update.minimized {
+
+		fieldset {
+			//display: inline;
+		}
+
+		.box {
+			fieldset:nth-child(1) {
+				.splitcontent:nth-child(1) {
+					.splitcontentleft {
+						p:nth-child(1), // status
+						p:nth-child(2) // priority
+						{
+							display: none;
+						}
+					}
+				}
+			}
+
+			.jstElements {
+				display: block;
+				position: absolute;
+				top: 50px; right: 15px;
+
+				button, span {
+					display: none;
+				}
+
+				.jstb_bq, .jstb_unbq {
+					display: inline-block;
+				}
+			}
+
+			.jstEditor textarea {
+				height: 100px;
 			}
 		}
 	}
 }
 
-button.toggleSidebar:hover, button.minimize:hover {
-
-}
-button.toggleSidebar, button.minimize {
+button.toggleSidebar {
 	position: absolute;
 	top: 10px; right: 10px;
 	z-index: 10;
@@ -295,17 +428,8 @@ button.toggleSidebar, button.minimize {
 	background: transparent;
 	-webkit-appearance: none;
 }
-button.toggleSidebar:hover, button.minimize:hover {
+button.toggleSidebar:hover {
 	border-color: transparent red transparent transparent;
-}
-
-button.minimize {
-	margin: -3px -13px 0; padding: 3px;
-	width: 25px; height: 25px; line-height: 25px;
-	opacity: .9;
-	border: 1px solid #aaa;
-	border-radius: 2px;
-	background: #eee;
 }
 
 

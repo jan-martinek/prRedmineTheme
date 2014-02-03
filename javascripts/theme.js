@@ -210,9 +210,6 @@ var ProofReasonRedmineTheme = {
         $('#update').show();
         $('#notes').focus();
         $('html, body').animate({scrollTop: $('#notes').closest('fieldset').offset().top}, 100);
-
-        // leaner update form cookie init
-
         e.preventDefault();
       });
 
@@ -221,83 +218,41 @@ var ProofReasonRedmineTheme = {
       var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
       var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
 
-      issueAttributes.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-      $('.issueAttributes button.minimize').click(function() {
-        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('issueAttributes', $(this));
+      $('#update').prepend('<span class="minimize"><i class="bootstrap-icon-minus"></i> <i class="bootstrap-icon-plus"></i></span>');
+      $('#update span.minimize').click(function() {
+        ProofReasonRedmineTheme.BetterUpdateForm.toggleUpdateForm();
         return false;
       });
-      if (this.tools.cookie('issueAttributesMinimized')) {
-        $('.issueAttributes button.minimize').click();
-        this.tools.cookie('issueAttributesMinimized', true); // renew expiration
+      if (this.tools.cookie('updateFormMinimized')) {
+        $('#update span.minimize').click();
       }
 
-      timeLogging.prepend('<button class="minimize"><i class="bootstrap-icon-minus"></i></button>');
-      $('.timeLogging button.minimize').click(function() {
-        ProofReasonRedmineTheme.BetterUpdateForm.toggleFormFolding('timeLogging', $(this));
-        return false;
-      });
-      if (this.tools.cookie('timeLoggingMinimized')) {
-        $('.timeLogging button.minimize').click();
-        this.tools.cookie('timeLoggingMinimized', true); // renew expiration
-      }
-
-      // floating update textarea
       if ($(window).width() >= 891) {
         var updateForm = $('#update');
         var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
-        var textareaTools = updateForm.find('.issueJournalNotes .jstElements');
-        var textarea = textareaWrapper.find('textarea');
-
-        textareaWrapper.append('<a href="#" class="collapseTextarea">&#x25BC;</a>');
-        var collapseLink = $('.collapseTextarea');
-
-        collapseLink.click(function() {
-          if (textarea.height() > 100) {
-            collapseLink.css({bottom: '50px'}).html('&#x25B2;');
-            textareaTools.hide();
-            $('#update.fixedTextarea input[name="commit"]').hide();
-            textarea.animate({height: '40px'}, 'fast');
-          } else {
-            collapseLink.css({bottom: ''}).html('&#x25BC;');
-            textareaTools.show();
-            $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-            textarea.animate({height: '180px'}, 'fast');
-          }
-          return false;
-        });
 
         $(window).scroll(function() {
           if ($(updateForm).is(':visible')) {
             var range = textareaWrapper.offset().top + textareaWrapper.height();
             var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
 
-            if (!$('.fixedTextarea').length && windowBottomScrollTop < range) {
-              textareaWrapper.css({'height': (textarea.height() + 20) + 'px'});
-              textarea.css({width: (textarea.width() + 20) +'px', height: (textarea.height() + 20) +'px'});
-              collapseLink.css({bottom: ''}).html('&#x25BC;');
-              updateForm.addClass('fixedTextarea');
-            } else if ($('.fixedTextarea').length && windowBottomScrollTop > range) {
-              textareaWrapper.css({height: ''});
-              textarea.css({width: '', height: ''});
-              textareaTools.show();
-              $('#update.fixedTextarea input[name="commit"]').css({display: 'inline'});
-              $('.closeTextarea').html('&#x25BC;').css({bottom: ''});
-              $('#update.fixedTextarea').removeClass('fixedTextarea');
+            if (!$('.fixedUpdate').length && windowBottomScrollTop < range) {
+              updateForm.addClass('fixedUpdate');
+            } else if ($('.fixedUpdate').length && windowBottomScrollTop > range) {
+              updateForm.removeClass('fixedUpdate');
             }
           }
         });
       }
     },
 
-    toggleFormFolding: function (groupName, button, buttonStates) {
-      if (!$('#update').hasClass(groupName + 'Minimized')) {
-        $('#update').addClass(groupName + 'Minimized');
-        button.html('<i class="bootstrap-icon-plus"></i>');
-        this.tools.cookie(groupName + 'Minimized', true);
+    toggleUpdateForm: function () {
+      if ($('#update').hasClass('minimized')) {
+        $('#update').removeClass('minimized');
+        this.tools.removeCookie('updateFormMinimized');
       } else {
-        $('#update').removeClass(groupName + 'Minimized');
-        button.html('<i class="bootstrap-icon-minus"></i>');
-        this.tools.removeCookie(groupName + 'Minimized');
+        $('#update').addClass('minimized');
+        this.tools.cookie('updateFormMinimized', true);
       }
     }
   },
@@ -718,6 +673,12 @@ var ProofReasonRedmineTheme = {
         menu.parentNode.removeChild(menu);
         document.body.appendChild(menu);
       }
+    }
+  },
+
+  MobileRedmine: {
+    init: function() {
+      $('head').append('<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">');
     }
   }
 }
