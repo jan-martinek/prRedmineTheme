@@ -309,7 +309,7 @@ var ProofReasonRedmineTheme = {
   },
 
   TimeyIntegration: {
-    var ppm;
+    ppm: null,
 
     init: function() {
       this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
