@@ -274,7 +274,7 @@ var ProofReasonRedmineTheme = {
               $issueAssignedToId.val(author);
               $issueAssignedToId.prev('label').highlight();
             });
-        
+
         } else if (value == 17 || value == 5) { // Closed (on baufinder) OR Closed anywhere else
           $allAttributes.one('DOMSubtreeModified', function() {
             console.debug('All attributes DOMSubtreeModified event.');
@@ -309,6 +309,8 @@ var ProofReasonRedmineTheme = {
   },
 
   TimeyIntegration: {
+    var ppm;
+
     init: function() {
       this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
 

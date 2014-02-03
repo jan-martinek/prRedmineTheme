@@ -165,66 +165,6 @@ form {
 	}
 }
 
-/* fixed textarea */
-
-/*@media screen and (min-width: 981px) {
-	#update a.collapseTextarea {
-		display: none;
-	}
-
-	#update.fixedTextarea {
-		input[name="commit"] {
-			position: fixed;
-			bottom: 194px; left: 85px;
-		}
-	}
-
-	#update.fixedTextarea .issueJournalNotes {
-
-		.jstElements {
-			position: fixed;
-			height: 26px; width: 600px;
-			background: rgba(255, 255, 255, .9);
-			bottom: 190px; left: 140px;
-			padding: 2px 100px 2px 20px;
-		}
-
-		.jstEditor {
-			height: 173px;
-
-			textarea {
-				position: fixed;
-				height: 160px; width: 500px;
-				bottom: 10px; left: 45px;
-
-				-webkit-box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
-				box-shadow:  0px 0px 10px 0px rgba(0, 0, 0, .5);
-
-				z-index: 11;
-			}
-
-			a.collapseTextarea {
-				display: block;
-				position: fixed;
-				bottom: 190px; left: 45px;
-
-				background: #5fbaed;
-				color: white;
-				text-decoration: none;
-				width: 30px; height: 30px;
-				line-height: 30px;
-				overflow: hidden;
-				text-align: center;
-				font-size: 15px;
-
-				&:hover {
-					background: #182f3c;
-				}
-			}
-		}
-	}
-}*/
-
 /* optionally hidden elements */
 #update {
 	position: relative;
@@ -322,7 +262,7 @@ form {
 	}
 }
 
-#update.minimized //.fixedUpdate
+#update.minimized
 {
 		position: fixed;
 		bottom: 0;
@@ -365,10 +305,6 @@ form {
 
 @media screen and (max-width: 480px) {
 	#update.minimized {
-
-		fieldset {
-			//display: inline;
-		}
 
 		.box {
 			fieldset:nth-child(1) {
@@ -627,10 +563,3 @@ body.zenMode {
 		}
 	}
 }
-
-/* mobile - experimental */
-/* @media screen and (max-width: 480px) {
-	textarea {
-		max-width: 460px;
-	}
-} */
