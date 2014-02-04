@@ -603,8 +603,7 @@ body.zenMode {
 				line-height: 25px;
 			}
 
-
-			.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings {
+			.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings, .news, .repository {
 				display: none;
 			}
 		}
@@ -668,14 +667,14 @@ body.zenMode {
 		}
 
 		table.issues {
-			&, thead, tbody {
+			&, tbody {
 				width: auto;
 				max-width: 100%;
 				display: block;
 			}
 
 
-			th {
+			th, thead {
 				display: none;
 			}
 
@@ -685,18 +684,27 @@ body.zenMode {
 				height: auto !important;
 				display: block;
 				overflow: hidden;
+				padding: 30px 5px 10px;
+				position: relative;
 			}
 
 			td {
-				padding: 5px;
+				padding: 2px 5px;
 				display: block;
 				float: left;
 				line-height: 1.3em;
 				height: auto !important;
 				border: 0 !important;
 
-				&.id, &.project, &.status { width: auto; max-width: 200px; }
-				&.subject { white-space: nowrap; a { color: blue; } }
+				b { font-weight: normal; }
+				&.id, &.project, &.status { font-weight: normal !important; width: auto; max-width: 200px; }
+				&.subject {
+					clear: left;
+					white-space: nowrap;
+					font-weight: bold;
+					position: absolute;
+					top: 10px;
+				}
 				&.assigned_to { clear: left; }
 				&.updated_on:before { content: "updated "; }
 				&.due_date:before { content: "due "; }
