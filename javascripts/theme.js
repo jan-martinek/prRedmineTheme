@@ -681,11 +681,19 @@ var ProofReasonRedmineTheme = {
 
   MobileRedmine: {
     init: function() {
+      $('body').addClass('mobileRedmine');
       $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">');
-
       if ($(window).width() <= 480) {
-        setTimeout(function() {$('#project_quick_jump_box').select2('destroy')}, 300); // testing
+        // just for beta testing, it should be rather prevented than destroyed
+        setTimeout(function() {$('#project_quick_jump_box').select2('destroy')}, 300);
       }
+      $('#footer .bgr').append('<br><a id="backToDestop" href="javascript:ProofReasonRedmineTheme.MobileRedmine.remove()">Back to desktop mode</a>');
+    },
+    remove: function() {
+      $('#backToDestop').remove();
+      $('body').removeClass('mobileRedmine');
+      $('head meta[name="viewport"]').remove();
+      $('#project_quick_jump_box').select2();
     }
   }
 }
