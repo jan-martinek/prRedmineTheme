@@ -320,7 +320,7 @@ var ProofReasonRedmineTheme = {
       }
       url = url+'#/logs/new';
 
-      var timeyLogger = '<div class="timeyLoggerWrapper"><span class="close"><i class="bootstrap-icon-remove"></i></span><iframe style="border:0; width: 100%; height: 170px" src="'+
+      var timeyLogger = '<div class="timeyLoggerWrapper"><span class="close"><i class="bootstrap-icon-remove"></i></span><iframe style="border:0; width: 100%; height: 220px" src="'+
       url+'"></iframe></div>';
 
       if (this.ppm.matchPage('timelog', 'new')) {
