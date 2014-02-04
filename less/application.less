@@ -607,177 +607,220 @@ body.zenMode {
 
 
 
-@media screen and (max-width: 640px) {
-	body.mobileRedmine {
-		&, #quick-search, #header, #top-menu, #main-menu, #main, #sidebar, #content {
-			position: static;
-			min-width: 0;
-			min-height: 0;
-			height: auto;
-			width: auto;
-			float: none;
-			padding: 0;
-			margin: 0;
+@media screen and (max-width: 640px) { body.mobileRedmine {
+
+	&, #quick-search, #header, #top-menu, #main-menu, #main, #sidebar, #content {
+		position: static;
+		min-width: 0;
+		min-height: 0;
+		height: auto;
+		width: auto;
+		float: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	#header {
+		background: #112631;
+	}
+
+	#main-menu ul li, #main-menu ul li a, #top-menu li, #top-menu div, #top-menu ul  {
+		float: none;
+		display: inline;
+
+	}
+
+	#main-menu {
+		ul {
+			margin: 10px 0 0;
 		}
 
-		#header {
-			background: #112631;
+		li {
+			margin: 0; padding: 0;
 		}
 
-		#main-menu ul li, #main-menu ul li a, #top-menu li, #top-menu div, #top-menu ul  {
-			float: none;
+		a {
+			padding: 5px;
+			line-height: 25px;
+		}
+
+		.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings, .news, .repository {
+			display: none;
+		}
+	}
+
+	#quick-search {
+		input, select {
+			margin: 10px auto;
+			width: 45%;
+		}
+
+		label {
+			display: none;
+		}
+	}
+
+	#main, #top-menu {
+		padding: 0 10px;
+	}
+	#top-menu {
+		display: none;
+	}
+
+	.contextual {
+		float: none;
+		white-space: normal;
+		margin: 10px 0;
+		padding: 0;
+		line-height: 30px;
+
+		.icon-copy, .icon-time-add {
+			display: none;
+		}
+	}
+
+	#main.nosidebar #content {
+		padding: 0;
+	}
+	#header {
+		padding: 10px 10px 0;
+	}
+	#header h1 {
+		display: none;
+		padding: 45px 0 0;
+		margin: 5px 0;
+		background-position: -15px 0px;
+	}
+	#main {
+		position: relative;
+	}
+
+	#sidebar {
+		margin: -10px -10px 0;
+		padding: 10px;
+	}
+	#content {
+		margin-top: 20px;
+  	}
+	.splitcontentright, .splitcontentleft {
+		float: none !important;
+		width: auto !important;
+	}
+
+	.issue table.attributes {
+		&, tr {
 			display: inline;
-
 		}
 
-		#main-menu {
-			ul {
-				margin: 10px 0 0;
-			}
-
-			li {
-				margin: 0; padding: 0;
-			}
-
-			a {
-				padding: 5px;
-				line-height: 25px;
-			}
-
-			.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings, .news, .repository {
-				display: none;
-			}
+		th, td {
+			display: block;
+			float: left;
+			width: auto;
 		}
 
-		#quick-search {
-			input, select {
-				margin: 10px auto;
-				width: 45%;
-			}
-
-			label {
-				display: none;
-			}
+		th {
+			clear: left;
 		}
 
-		#main, #top-menu {
-			padding: 0 10px;
+		td {
+			padding-left: 10px;
 		}
-		#top-menu {
+	}
+
+	table.issues {
+		&, tbody {
+			width: auto;
+			max-width: 100%;
+			display: block;
+		}
+
+
+		th, thead {
 			display: none;
 		}
 
-		.contextual {
-			float: none;
-			white-space: normal;
-			margin: 10px 0;
-			padding: 0;
-			line-height: 30px;
-
-			.icon-copy, .icon-time-add {
-				display: none;
-			}
-		}
-
-		#main.nosidebar #content {
-			padding: 0;
-		}
-		#header {
-			padding: 10px 10px 0;
-		}
-		#header h1 {
-			display: none;
-			padding: 45px 0 0;
-			margin: 5px 0;
-			background-position: -15px 0px;
-		}
-		#main {
+		tr {
+			text-align: left;
+			line-height: 1.3em;
+			height: auto !important;
+			display: block;
+			overflow: hidden;
+			padding: 30px 5px 10px;
 			position: relative;
 		}
 
-		#sidebar {
-			margin: -10px -10px 0;
-			padding: 10px;
-		}
-		#content {
-			margin-top: 20px;
-	  	}
-		.splitcontentright, .splitcontentleft {
-			float: none !important;
-			width: auto !important;
-		}
+		td {
+			padding: 2px 5px;
+			display: block;
+			float: left;
+			line-height: 1.3em;
+			height: auto !important;
+			border: 0 !important;
 
-		.issue table.attributes {
-			&, tr {
-				display: inline;
-			}
-
-			th, td {
-				display: block;
-				float: left;
-				width: auto;
-			}
-
-			th {
+			b { font-weight: normal; }
+			&.id, &.project, &.status { font-weight: normal !important; width: auto; max-width: 200px; }
+			&.subject {
 				clear: left;
+				white-space: nowrap;
+				font-weight: bold;
+				position: absolute;
+				top: 10px;
+				a {
+					font-size: 130%;
+					-webkit-text-size-adjust: 100%;
+				}
 			}
-
-			td {
-				padding-left: 10px;
-			}
+			&.assigned_to { clear: left; }
+			&.updated_on:before { content: "updated "; }
+			&.due_date:before { content: "due "; }
 		}
 
-		table.issues {
-			&, tbody {
-				width: auto;
-				max-width: 100%;
-				display: block;
-			}
-
-
-			th, thead {
-				display: none;
-			}
-
-			tr {
-				text-align: left;
-				line-height: 1.3em;
-				height: auto !important;
-				display: block;
-				overflow: hidden;
-				padding: 30px 5px 10px;
-				position: relative;
-			}
-
-			td {
-				padding: 2px 5px;
-				display: block;
-				float: left;
-				line-height: 1.3em;
-				height: auto !important;
-				border: 0 !important;
-
-				b { font-weight: normal; }
-				&.id, &.project, &.status { font-weight: normal !important; width: auto; max-width: 200px; }
-				&.subject {
-					clear: left;
-					white-space: nowrap;
-					font-weight: bold;
-					position: absolute;
-					top: 10px;
-					a {
-						font-size: 130%;
-						-webkit-text-size-adjust: 100%;
-					}
-				}
-				&.assigned_to { clear: left; }
-				&.updated_on:before { content: "updated "; }
-				&.due_date:before { content: "due "; }
-			}
-
-			th.checkbox, td.checkbox, th[title="Sort by \"Priority\""], td.priority {
-				display: none;
-			}
+		th.checkbox, td.checkbox, th[title="Sort by \"Priority\""], td.priority {
+			display: none;
 		}
 	}
-}
+
+	form.new_issue {
+		.tabular #all_attributes {
+			p {
+				padding: 0;
+			}
+			label {
+				margin: 10px 0 0;
+				text-align: left;
+				position: relative;
+				top: -5px;
+			}
+			input {
+				width: auto;
+			}
+			#issue_subject, select {
+				width: 60%;
+			}
+
+			issue_custom_field_values_13
+		}
+
+		#attachments_form, #watchers_form {
+			label {
+				margin: 10px 0 0;
+				text-align: left;
+				float: none;
+			}
+			span {
+				display: block;
+			}
+			span label {
+				display: block;
+				width: 47%;
+				margin-right: 3%;
+				float: left;
+				white-space: nowrap;
+				overflow: hidden;
+				box-sizing: border-box;
+			}
+
+			padding-left: 0;
+		}
+	}
+}}
