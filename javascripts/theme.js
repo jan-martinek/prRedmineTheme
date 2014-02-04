@@ -12,6 +12,7 @@ var ProofReasonRedmineTheme = {
     this.AbsencesViewer.init();
     this.BetterIssuesContextualMenu.init();
     this.ZenMode.init();
+    this.MobileRedmine.init();
   },
 
   tools: {
@@ -680,7 +681,11 @@ var ProofReasonRedmineTheme = {
 
   MobileRedmine: {
     init: function() {
-      $('head').append('<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">');
+      $('head').append('<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">');
+
+      if ($(window).width() <= 480) {
+        setTimeout(function() {$('#project_quick_jump_box').select2('destroy')}, 300); // testing
+      }
     }
   }
 }
