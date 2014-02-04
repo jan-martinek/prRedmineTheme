@@ -217,7 +217,7 @@ var ProofReasonRedmineTheme = {
       //leaner update form - temporary dirty implementation
       var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
       var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
-      var issueJournalNotes = $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
+      $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
 
       $('#update').prepend('<span class="minimize"><i class="bootstrap-icon-minus"></i> <i class="bootstrap-icon-plus"></i></span>');
       $('#update span.minimize').click(function() {
@@ -226,24 +226,6 @@ var ProofReasonRedmineTheme = {
       });
       if (this.tools.cookie('updateFormMinimized')) {
         $('#update span.minimize').click();
-      }
-
-      if ($(window).width() >= 891) {
-        var updateForm = $('#update');
-        var textareaWrapper = updateForm.find('.issueJournalNotes .jstEditor');
-
-        $(window).scroll(function() {
-          if ($(updateForm).is(':visible')) {
-            var range = textareaWrapper.offset().top + textareaWrapper.height();
-            var windowBottomScrollTop = $(window).scrollTop() + $(window).height();
-
-            if (!$('.fixedUpdate').length && windowBottomScrollTop < range) {
-              updateForm.addClass('fixedUpdate');
-            } else if ($('.fixedUpdate').length && windowBottomScrollTop > range) {
-              updateForm.removeClass('fixedUpdate');
-            }
-          }
-        });
       }
     },
 
@@ -317,22 +299,11 @@ var ProofReasonRedmineTheme = {
 
       $('<div id="enterTimey" style="float: right"><a href="https://timey.proofreason.com" target="_blank">Open Timey</a></div>').insertBefore('#loggedas');
 
-      this.insertTimeySwitch();
-    },
-
-    insertTimeySwitch: function() {
-
-      var timeySwitch = '<a class="timeySwitch" href="#">logovat v Timey</a>';
-
       if (this.ppm.matchPage('timelog', 'new')) {
-        $('#new_time_entry').prepend(timeySwitch);
+        ProofReasonRedmineTheme.TimeyIntegration.insertTimeyLogger();
       }
 
-      if (this.ppm.matchPage('issues', 'show')) {
-        $('.tabular.timeLogging').prepend(timeySwitch);
-      }
-
-      $('.timeySwitch').click(function() {
+      $('#main>#content>.contextual .icon-time-add, .timeySwitch').click(function() {
         ProofReasonRedmineTheme.TimeyIntegration.insertTimeyLogger();
         return false;
       });
@@ -349,18 +320,23 @@ var ProofReasonRedmineTheme = {
       }
       url = url+'#/logs/new';
 
-      var timeyLogger = '<div><iframe style="border:0; width: 100%; height: 220px" src="'+
-      url+
-      //'http://timey.eu01.aws.af.cm/?redmine[project_id]='+projectId+'&redmine[issue_id]='+issueId+
-      '"></iframe></div>';
+      var timeyLogger = '<div class="timeyLoggerWrapper"><span class="close"><i class="bootstrap-icon-remove"></i></span><iframe style="border:0; width: 100%; height: 170px" src="'+
+      url+'"></iframe></div>';
+
       if (this.ppm.matchPage('timelog', 'new')) {
         $('#new_time_entry').after(timeyLogger);
         $('#new_time_entry').hide();
       }
       if (this.ppm.matchPage('issues', 'show')) {
-        $('.tabular.timeLogging').append(timeyLogger);
-        $('.tabular.timeLogging .splitcontentleft, .tabular.timeLogging .splitcontentright, .tabular.timeLogging p').hide();
+        $('body').append(timeyLogger);
+        $('.timeyLoggerWrapper .close').click(function() {
+          ProofReasonRedmineTheme.TimeyIntegration.removeTimeyLogger();
+        });
       }
+    },
+
+    removeTimeyLogger: function() {
+      $('.timeyLoggerWrapper').remove();
     }
   },
 

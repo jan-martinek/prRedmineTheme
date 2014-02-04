@@ -127,6 +127,18 @@ textarea, textarea.wiki-edit {
 	}
 }
 
+.timeyLoggerWrapper {
+	position: fixed;
+	bottom: 0; left: 0;
+	width: 100%;
+	z-index: 12;
+	-webkit-box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+	box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+
+	padding: 10px;
+	background: white;
+}
+
 
 /* Issue updating form */
 #main, .issueAttributes, .timeLogging {
@@ -168,9 +180,31 @@ form {
 /* optionally hidden elements */
 #update {
 	position: relative;
+
+	legend, .box fieldset:nth-child(2) {
+		display: none;
+	}
+
+	.box {
+		padding: 10px 0;
+		background-color: #f8f8f8;
+	}
+
+	fieldset {
+		margin: 0;
+		padding: 0 10px;
+	}
+
+	fieldset:nth-child(4)>p {
+		margin: 0;
+	}
+
+	label[for="issue_private_notes"] {
+		float: right;
+	}
 }
 
-#update span.minimize {
+#update span.minimize, .timeyLoggerWrapper span.close {
 	display: block;
 	width: 14px;
 	height: 14px;
@@ -179,11 +213,16 @@ form {
 	border: 1px solid #ccc;
 	border-radius: 2px;
 	position: absolute;
-	top: 25px; right: 0;
+	top: 15px; right: 0;
 	z-index: 10;
 
 	.bootstrap-icon-minus { display: inline-block }
 	.bootstrap-icon-plus { display: none; }
+}
+
+.timeyLoggerWrapper span.close {
+	top: 10px;
+	right: 30px;
 }
 
 #update.minimized {
@@ -198,8 +237,10 @@ form {
 		margin: 0;
 		padding: 0 10px;
 	}
-
-	.box { background-color: #f8f8f8; }
+	.box {
+		padding: 0;
+		background-color: #f8f8f8;
+	}
 	legend { display: none; }
 
 	h3 {
@@ -273,7 +314,7 @@ form {
 		box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
 
 		span.minimize {
-			top: 10px;
+			top: 5px;
 			right: 10px;
 		}
 
