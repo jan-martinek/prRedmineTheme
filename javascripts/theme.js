@@ -205,6 +205,10 @@ var ProofReasonRedmineTheme = {
     init: function() {
       this.tools = ProofReasonRedmineTheme.tools;
 
+      // hide logging part of the form
+      $("#update legend:contains('Log time')").closest('fieldset').hide();
+
+
       // better functioning update, mainly on mobile
       $('.icon-edit[onclick="showAndScrollTo("update", "notes"); return false;"]').addClass('updateButton').attr('onclick', '');
       $('.updateButton').click(function(e) {
