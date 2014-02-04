@@ -567,108 +567,144 @@ body.zenMode {
 
 
 @media screen and (max-width: 767px) {
-	body, #quick-search, #header, #top-menu, #main-menu, #main, #sidebar, #content {
-		position: static;
-		min-width: 0;
-		min-height: 0;
-		height: auto;
-		width: auto;
-		float: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	#header {
-		background: #112631;
-	}
-
-	#main-menu ul li, #main-menu ul li a, #top-menu li, #top-menu div, #top-menu ul  {
-		float: none;
-		display: inline;
-
-	}
-
-	#main-menu {
-		ul {
-			margin: 10px 0 0;
+	body.mobileRedmine {
+		&, #quick-search, #header, #top-menu, #main-menu, #main, #sidebar, #content {
+			position: static;
+			min-width: 0;
+			min-height: 0;
+			height: auto;
+			width: auto;
+			float: none;
+			padding: 0;
+			margin: 0;
 		}
 
-		li {
-			margin: 0; padding: 0;
+		#header {
+			background: #112631;
 		}
 
-		a {
-			padding: 5px;
-			line-height: 25px;
+		#main-menu ul li, #main-menu ul li a, #top-menu li, #top-menu div, #top-menu ul  {
+			float: none;
+			display: inline;
+
 		}
 
+		#main-menu {
+			ul {
+				margin: 10px 0 0;
+			}
 
-		.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings {
+			li {
+				margin: 0; padding: 0;
+			}
+
+			a {
+				padding: 5px;
+				line-height: 25px;
+			}
+
+
+			.overview, .roadmap, .gantt, .calendar, .documents, .files, .settings {
+				display: none;
+			}
+		}
+
+		#quick-search {
+			input, select {
+				margin: 10px auto;
+				width: 45%;
+			}
+
+			label {
+				display: none;
+			}
+		}
+
+		#main, #top-menu {
+			padding: 0 10px;
+		}
+		#top-menu {
 			display: none;
 		}
-	}
 
-	#quick-search {
-		input, select {
-			margin: 10px auto;
-			width: 45%;
+		.contextual {
+			float: none;
+			white-space: normal;
+			margin: 10px 0;
+			padding: 0;
+			line-height: 30px;
+
+			.icon-copy, .icon-time-add {
+				display: none;
+			}
 		}
 
-		label {
-			display: none;
+		#main.nosidebar #content {
+			padding: 0;
 		}
-	}
-
-	#main, #top-menu {
-		padding: 0 10px;
-	}
-	#top-menu {
-		display: none;
-	}
-
-	.contextual {
-		float: none;
-		white-space: normal;
-		margin: 10px 0;
-		padding: 0;
-		line-height: 30px;
-
-		.icon-copy, .icon-time-add {
-			display: none;
+		#header {
+			padding: 10px 10px 0;
 		}
-	}
-
-	#main.nosidebar #content {
-		padding: 0;
-	}
-	#header {
-		padding: 10px 10px 0;
-	}
-	#header h1 {
-		display: none;
-		padding: 45px 0 0;
-		margin: 5px 0;
-		background-position: -15px 0px;
-	}
-	#main {
-		position: relative;
-	}
-
-	#sidebar {
-		margin: -10px -10px 0;
-		padding: 10px;
-	}
-	#content {
-		margin-top: 20px;
-  	}
-	.splitcontentright, .splitcontentleft {
-		float: none !important;
-		width: auto !important;
-	}
-
-	table.issues {
-		th.checkbox, td.checkbox, th[title="Sort by \"Priority\""], td.priority {
+		#header h1 {
 			display: none;
+			padding: 45px 0 0;
+			margin: 5px 0;
+			background-position: -15px 0px;
+		}
+		#main {
+			position: relative;
+		}
+
+		#sidebar {
+			margin: -10px -10px 0;
+			padding: 10px;
+		}
+		#content {
+			margin-top: 20px;
+	  	}
+		.splitcontentright, .splitcontentleft {
+			float: none !important;
+			width: auto !important;
+		}
+
+		table.issues {
+			&, thead, tbody {
+				width: auto;
+				max-width: 100%;
+				display: block;
+			}
+
+
+			th {
+				display: none;
+			}
+
+			tr {
+				text-align: left;
+				line-height: 1.3em;
+				height: auto !important;
+				display: block;
+				overflow: hidden;
+			}
+
+			td {
+				padding: 5px;
+				display: block;
+				float: left;
+				line-height: 1.3em;
+				height: auto !important;
+				border: 0 !important;
+
+				&.id, &.project, &.status { width: auto; max-width: 200px; }
+				&.subject { white-space: nowrap; a { color: blue; } }
+				&.assigned_to { clear: left; }
+				&.updated_on:before { content: "updated "; }
+				&.due_date:before { content: "due "; }
+			}
+
+			th.checkbox, td.checkbox, th[title="Sort by \"Priority\""], td.priority {
+				display: none;
+			}
 		}
 	}
 }
