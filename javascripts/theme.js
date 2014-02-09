@@ -603,6 +603,7 @@ var ProofReasonRedmineTheme = {
 
       $.ajax({
         url: this.absencesInfoUrl,
+        global: false,
         success: function(data) {
           var AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
 
