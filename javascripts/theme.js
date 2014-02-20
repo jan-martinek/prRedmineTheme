@@ -306,20 +306,26 @@ var ProofReasonRedmineTheme = {
     init: function() {
       this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
 
-      $('<div id="makeMony" style="float: right"><a href="/projects/chci-praci/issues/new">Chci práci!</a></div>').insertBefore('#loggedas');
+      $('<div id="makeMoney" style="float: right"><a href="/projects/chci-praci/issues/new">Chci práci!</a></div>').insertBefore('#loggedas');
 
       if ($('body').hasClass('project-chci-praci') && this.ppm.matchPage('issues', 'new')) {
+        var nextMonday = this.getNextMonday();
+        $('#issue_subject').val('Příští týden (od ' + nextMonday.getDate() + '. ' + (nextMonday.getMonth()+1) + '.) mám X hodin času');
 
-
-          var today = new Date();
-          var weekday = today.getDay() || 7;
-          if (weekday !== 1) today.setDate(-(weekday)+7);
-
-
-
-
-        $('input#issue_subject').val('Příští týden (od ' + today.getDate() + '. '+(today.getMonth()+1)+'.) mám X hodin času');
+        $('.splitcontentleft, .splitcontentright').css({'float':'none','width':'auto','margin':'0'});
+        $('#all_attributes p, #attachments_form, #watchers_form, input[name="continue"], a:contains("Preview")').hide();
+        $('#all_attributes #issue_subject').closest('p').show();
+        $('#all_attributes #issue_description_and_toolbar').closest('p').show();
+        $('#all_attributes #issue_description_and_toolbar textarea').attr('placeholder', 'Upřesněte případné detaily.');
+        $('#all_attributes #issue_due_date').closest('p').show();
       }
+    },
+
+    getNextMonday: function() {
+      var today = new Date();
+      var weekday = today.getDay() || 7;
+      if (weekday !== 1) today.setDate(-(weekday)+7);
+      return today;
     }
   },
 
