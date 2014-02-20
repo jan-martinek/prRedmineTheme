@@ -56,7 +56,7 @@ var ProofReasonRedmineTheme = {
     removeCookie: function(key) {
       window.localStorage.removeItem('theme.' + key + '.expire');
       return window.localStorage.removeItem('theme.' + key);
-    },
+    }
   },
 
   debug: function() {
@@ -435,7 +435,7 @@ var ProofReasonRedmineTheme = {
     },
 
     toggleFormats: function(cells) {
-      cell = $(cells).first();
+      var cell = $(cells).first();
 
       var data = cell.data();
       var variants = [];
@@ -443,8 +443,8 @@ var ProofReasonRedmineTheme = {
         if (param.indexOf('format.') === 0) variants.push(param.substring(7));
       }
 
-      currentFormat = $.inArray(cell.data('currentlyDisplayed'), variants);
-      nextFormat = (currentFormat < variants.length - 1) ? currentFormat + 1 : 0;
+      var currentFormat = $.inArray(cell.data('currentlyDisplayed'), variants);
+      var nextFormat = (currentFormat < variants.length - 1) ? currentFormat + 1 : 0;
 
       this.tools.cookie(cells, variants[nextFormat]);
       this.showAlternateFormat(cells, variants[nextFormat]);
@@ -576,13 +576,27 @@ var ProofReasonRedmineTheme = {
   },
 
   AbsencesViewer: {
-    absences: null,
     absencesInfoUrl: null,
     htmlOutput: null,
 
+    czechMonths: {
+      Leden: 1,
+      Únor: 2,
+      Březen: 3,
+      Duben: 4,
+      Květen: 5,
+      Červen: 6,
+      Červenec: 7,
+      Srpen: 8,
+      Září: 9,
+      Říjen: 10,
+      Listopad: 11,
+      Prosinec: 12
+    },
+
     init: function() {
       this.absencesInfoUrl = window.location.hostname == 'localhost' ?
-      'holidays.html' : // test
+      '/redmine/holidays.html' : // test
       '/projects/pm/wiki/Holidays'; // production
 
 
@@ -595,94 +609,209 @@ var ProofReasonRedmineTheme = {
       }
 
       if ($('#plannedAbsences').length) {
-        if (ProofReasonRedmineTheme.tools.cookie('absences')) {
-          this.htmlOutput = ProofReasonRedmineTheme.tools.cookie('absences');
-          this.putHtmlIntoDocument();
+        if (ProofReasonRedmineTheme.tools.cookie('absencesObject')) {
+          var absences = JSON.parse(ProofReasonRedmineTheme.tools.cookie('absencesObject'));
+          this.put(absences);
         } else {
-          this.loadAbsencesData();
+          this.load();
         }
 
       }
     },
 
-    createHtml: function() {
-      var output = '';
+    createHtml: function(data) {
+      // Group by month
+      var grouped = {};
+      for (var name in data) {
+        for (var i = 0; i < data[name].length; i++) {
+          var parts = data[name][i].from.split('-'),
+            month = parts[0] + '-' + parts[1];
 
-      this.absences.forEach(function(month) {
-        if (month.people.length) {
-          output += '<h4 style="margin: 10px 0 0">' + month.name + '</h4><ul>';
+          if (!(month in grouped)) {
+            grouped[month] = {};
+          }
+          if (!(name in grouped[month])) {
+            grouped[month][name] = [];
+          }
 
-          month.people.forEach(function(person) {
-            output += '<li style="margin: 0px 0;"><b>' + person.name + '</b>: ' + person.absences.join('., ').replace('-', '.—') + '.</li>';
-          });
-
-          output += '</ul>';
+          grouped[month][name].push(data[name][i]);
         }
+      }
+
+      var flippedMonths = {};
+      for (var key in this.czechMonths) {
+          flippedMonths[this.czechMonths[key]] = key;
+      }
+
+      var months = [];
+      for (month in grouped) {
+        var object = {
+          month: month,
+          persons: []
+        };
+
+        for (var person in grouped[month]) {
+          object.persons.push({
+            name: person,
+            absences: grouped[month][person]
+          });
+        }
+
+        object.persons.sort(function(a, b) {
+          return a.name.split(' ')[1] > b.name.split(' ')[1];
+        });
+
+        months.push(object);
+      }
+
+      months.sort(function(a, b) {
+        return a.month > b.month;
       });
 
-      ProofReasonRedmineTheme.tools.cookie('absences', output, 12);
-      this.htmlOutput = output;
+      var html = [];
+      for (i = 0; i < months.length; i++) {
+        html.push('<h4 style="margin: 10px 0 0">');
+        html.push(flippedMonths[months[i].month.split('-')[1]]);
+        html.push(' ');
+        html.push(months[i].month.split('-')[0]);
+        html.push('</h4><ul>');
+
+        for (var j = 0; j < months[i].persons.length; j++) {
+          html.push('<li style="margin: 0 0;"><b>');
+          html.push(months[i].persons[j].name);
+          html.push('</b>: ');
+
+          var dates = [];
+          for (var k = 0; k < months[i].persons[j].absences.length; k++) {
+            var absence = months[i].persons[j].absences[k],
+              fromDay = absence.from.split('-')[2],
+              toDay = absence.to.split('-')[2];
+
+            var description = '';
+            switch (absence.type) {
+              case '?':
+                description = ' (možná)';
+                break;
+
+              case '-':
+                break;
+
+              default:
+                description = ' (' + absence.type + ')';
+            }
+
+            if (fromDay === toDay) {
+              dates.push(fromDay + '.' + description);
+            } else {
+              dates.push(fromDay + '.—' + toDay + '.' + description);
+            }
+          }
+
+          html.push(dates.join(', '));
+          html.push('</li>');
+        }
+
+        html.push('</ul>');
+      }
+
+      return html.join('');
     },
 
-    putHtmlIntoDocument: function() {
-      $('#plannedAbsences').html('<h3 style="margin-top: 30px">Planned absences (<a href="javascript:ProofReasonRedmineTheme.AbsencesViewer.loadAbsencesData()">refresh</a>)</h3>' +
-        this.htmlOutput + '<p><a href="' + this.absencesInfoUrl + '">Zobrazit detaily</a></p>');
+    putHtmlIntoDocument: function(html) {
+      $('#plannedAbsences').html('<h3 style="margin-top: 30px">Planned absences (<a href="javascript:ProofReasonRedmineTheme.AbsencesViewer.load()">refresh</a>)</h3>' +
+        html + '<p><a href="' + this.absencesInfoUrl + '">Zobrazit detaily</a></p>');
     },
 
-    loadAbsencesData: function() {
-      this.absences = [];
+    getAbsencesForTable: function(table, data) {
+      var trs = table.querySelectorAll('tr'),
+        month = trs[0].querySelector('td strong').textContent,
+        date = month.split(' ')[1] + '-' + this.czechMonths[month.split(' ')[0]] + '-';
+
+      for (var i = 2; i < trs.length; i++) {
+        var tds = trs[i].querySelectorAll('td'),
+          name = tds[0].textContent,
+          person;
+
+        if (name in data) {
+          person = data[name];
+        } else {
+          data[name] = [];
+          person = data[name];
+        }
+
+        var day = 1;
+        for (var j = 1; j < tds.length; j++) {
+          var td = tds[j],
+            tdContent = td.textContent,
+            absence;
+
+          if (tdContent !== (day + '.')) {
+            if (absence && absence.type !== tdContent) {
+              absence.to = date + (day - 1);
+              person.push(absence);
+              absence = null;
+            }
+
+            if (!absence) {
+              absence = {
+                from: date + day,
+                to: -1,
+                type: tdContent
+              };
+            }
+          } else if (absence) {
+            absence.to = date + (day - 1);
+            person.push(absence);
+            absence = null;
+          }
+
+          if (td.colSpan) {
+            day += td.colSpan;
+          } else {
+            day++;
+          }
+        }
+
+        if (absence) {
+          absence.to = date + (day - 1);
+          person.push(absence);
+          absence = null;
+        }
+      }
+    },
+
+    loadAbsencesData: function(callback) {
+      var self = this;
 
       $.ajax({
         url: this.absencesInfoUrl,
         global: false,
-        success: function(data) {
-          var AbsencesViewer = ProofReasonRedmineTheme.AbsencesViewer;
-
-          data.split(/\s+<table>\s+/).forEach(function(table, tableNumber) {
-            if (tableNumber > 0) {
-              var month = {'name' : null, 'people' : []};
-              var lastDayOfTheMonth = AbsencesViewer.findLastDayOfTheMonth(table);
-
-              table.split(/\s+<tr>\s+/).forEach(function(row, rowNumber) {
-                if (rowNumber == 0) {
-                  month.name = row.match(/<strong>([^<]+)</);
-                  month.name = month.name[1];
-                }
-                else if (rowNumber > 3) {
-                  var holidays = [];
-                  for (var i = 1; i <= lastDayOfTheMonth; i++) {
-                    if (row.indexOf('>' + i + '.') == -1) {
-                      holidays.push(i);
-                    }
-                  }
-
-                  if (holidays.length) {
-                    holidays = getRanges(holidays);
-                    var name = row.match(/^<td>([^<]+)</);
-                    month.people.push({'name' : name[1], 'absences' : holidays});
-                  }
-                }
-              });
-              AbsencesViewer.absences.push(month);
-            }
-          });
-          AbsencesViewer.createHtml();
-          AbsencesViewer.putHtmlIntoDocument();
-        },
         cache: false
+      }).success(function(data) {
+        var absences = {};
+
+        var tmp = document.createElement('div');
+        tmp.innerHTML = data;
+
+        var tables = tmp.querySelectorAll('table');
+        for (var i = 0; i < tables.length; i++) {
+          self.getAbsencesForTable(tables[i], absences);
+        }
+
+        callback(absences);
       });
     },
 
-    findLastDayOfTheMonth: function(table) {
+    load: function() {
+      this.loadAbsencesData(this.put);
+    },
 
-      for (var dayNumber = 31; dayNumber >= 28; dayNumber--) {
-        if (table.indexOf(dayNumber + '.</td') != '-1') {
-          return dayNumber;
-        }
-      }
+    put: function(absences) {
+      ProofReasonRedmineTheme.tools.cookie('absencesObject', JSON.stringify(absences), 24);
 
-      console.log('Last day of the month could not be assesed.');
-    }
+      var html = ProofReasonRedmineTheme.AbsencesViewer.createHtml(absences);
+      ProofReasonRedmineTheme.AbsencesViewer.putHtmlIntoDocument(html);
+    },
   },
 
   BetterIssuesContextualMenu: {
@@ -712,7 +841,7 @@ var ProofReasonRedmineTheme = {
       $('#project_quick_jump_box').select2();
     }
   }
-}
+};
 
 $(document).ready(function() {
   ProofReasonRedmineTheme.init();
