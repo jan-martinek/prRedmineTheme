@@ -13,6 +13,7 @@ var ProofReasonRedmineTheme = {
     this.BetterIssuesContextualMenu.init();
     this.ZenMode.init();
     this.MobileRedmine.init();
+    this.MakeMoney.init();
   },
 
   tools: {
@@ -296,6 +297,29 @@ var ProofReasonRedmineTheme = {
         $('.showStatusChanges').hide();
         return false;
       });
+    }
+  },
+
+  MakeMoney: {
+    ppm: null,
+
+    init: function() {
+      this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
+
+      $('<div id="makeMony" style="float: right"><a href="/projects/chci-praci/issues/new">Chci práci!</a></div>').insertBefore('#loggedas');
+
+      if ($('body').hasClass('project-chci-praci') && this.ppm.matchPage('issues', 'new')) {
+
+
+          var today = new Date();
+          var weekday = today.getDay() || 7;
+          if (weekday !== 1) today.setDate(-(weekday)+7);
+
+
+
+
+        $('input#issue_subject').val('Příští týden (od ' + today.getDate() + '. '+(today.getMonth()+1)+'.) mám X hodin času');
+      }
     }
   },
 
