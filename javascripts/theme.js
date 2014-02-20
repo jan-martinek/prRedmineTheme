@@ -54,6 +54,7 @@ var ProofReasonRedmineTheme = {
     },
 
     removeCookie: function(key) {
+      window.localStorage.removeItem('theme.' + key + '.expire');
       return window.localStorage.removeItem('theme.' + key);
     },
   },
