@@ -306,7 +306,7 @@ var ProofReasonRedmineTheme = {
     init: function() {
       this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
 
-      $('<div id="makeMoney" style="float: right"><a href="/projects/chci-praci/issues/new">Chci práci!</a></div>').insertBefore('#loggedas');
+      $('<div id="makeMoney" style="float: right"><a href="/projects/chci-praci/issues/new?issue[assigned_to_id]=79&issue[priority_id]=5">Chci práci!</a></div>').insertBefore('#loggedas');
 
       if ($('body').hasClass('project-chci-praci') && this.ppm.matchPage('issues', 'new')) {
         var nextMonday = this.getNextMonday();
