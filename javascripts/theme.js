@@ -272,11 +272,14 @@ var ProofReasonRedmineTheme = {
           $allAttributes.one('DOMSubtreeModified', function() {
             console.debug('All attributes DOMSubtreeModified event.');
 
-            var $issueCustomFieldValues24 = $('#issue_custom_field_values_24');
-            if ($issueCustomFieldValues24.size() > 0) {
-              $issueCustomFieldValues24.val((new Date).yyyymmdd());
-              $issueCustomFieldValues24.prev('label').highlight();
-            }
+            setTimeout(function() {
+              var $issueCustomFieldValues24 = $('#issue_custom_field_values_24');
+              if ($issueCustomFieldValues24.size() > 0) {
+                $issueCustomFieldValues24.val((new Date).yyyymmdd());
+                $issueCustomFieldValues24.prev('label').highlight();
+              }
+            }, 100);
+
           });
         }
       });
