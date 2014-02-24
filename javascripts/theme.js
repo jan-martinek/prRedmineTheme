@@ -258,31 +258,40 @@ var ProofReasonRedmineTheme = {
       $allAttributes.on('change','select#issue_status_id',  function() {
         var value = $(this).val();
         if (value == 3) { // Solved
-          var author = $('p.author a').first().attr('href').substring(7);
-
             $allAttributes.one('DOMSubtreeModified', function() {
               console.debug('All attributes DOMSubtreeModified event.');
 
-              var $issueAssignedToId = $('select#issue_assigned_to_id');
-              $issueAssignedToId.val(author);
-              $issueAssignedToId.prev('label').highlight();
-            });
+              setTimeout(function() {
+                ProofReasonRedmineTheme.AutoReturnToOwner.returnToOwner();
+              }, 100);
 
+            });
         } else if (value == 17 || value == 5) { // Closed (on baufinder) OR Closed anywhere else
           $allAttributes.one('DOMSubtreeModified', function() {
             console.debug('All attributes DOMSubtreeModified event.');
 
             setTimeout(function() {
-              var $issueCustomFieldValues24 = $('#issue_custom_field_values_24');
-              if ($issueCustomFieldValues24.size() > 0) {
-                $issueCustomFieldValues24.val((new Date).yyyymmdd());
-                $issueCustomFieldValues24.prev('label').highlight();
-              }
+              ProofReasonRedmineTheme.AutoReturnToOwner.setClosingDate();
             }, 100);
-
           });
         }
       });
+    },
+
+    returnToOwner: function() {
+      var author = $('p.author a').first().attr('href').substring(7);
+
+      var $issueAssignedToId = $('select#issue_assigned_to_id');
+      $issueAssignedToId.val(author);
+      $issueAssignedToId.prev('label').highlight();
+    },
+
+    setClosingDate: function() {
+      var $issueCustomFieldValues24 = $('#issue_custom_field_values_24');
+      if ($issueCustomFieldValues24.size() > 0) {
+        $issueCustomFieldValues24.val((new Date).yyyymmdd());
+        $issueCustomFieldValues24.prev('label').highlight();
+      }
     }
   },
 
