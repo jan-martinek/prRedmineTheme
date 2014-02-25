@@ -14,6 +14,7 @@ var ProofReasonRedmineTheme = {
     this.ZenMode.init();
     this.MobileRedmine.init();
     this.MakeMoney.init();
+    this.ClickableIssueNames.init();
   },
 
   tools: {
@@ -204,6 +205,17 @@ var ProofReasonRedmineTheme = {
       $('button.toggleSidebar').html('&larr;');
       $('#main').addClass('nosidebar');
       this.tools.cookie('sidebarHidden', true);
+    }
+  },
+
+  ClickableIssueNames: {
+    init: function() {
+      this.ppm = ProofReasonRedmineTheme.PagePropertyMiner;
+      if (this.ppm.matchPage('issues', 'show')) {
+        $('table.list.issues td.subject').each(function() {
+          $(this).html($(this).find('a').html($(this).text()));
+        });
+      }
     }
   },
 
