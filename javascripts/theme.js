@@ -223,9 +223,12 @@ var ProofReasonRedmineTheme = {
     init: function() {
       this.tools = ProofReasonRedmineTheme.tools;
 
-      // hide logging part of the form
-      $("#update legend:contains('Log time')").closest('fieldset').hide();
+      $('#update #issue_subject').closest('fieldset').addClass('issueAttributes');
+      $("#update #time_entry_hours").closest('fieldset').addClass('timeLogging');
+      $('#update #issue_notes').closest('fieldset').addClass('issueJournalNotes');
 
+      // hide logging part of the form
+      $("#update .timeLogging").closest('fieldset').hide();
 
       // better functioning update, mainly on mobile
       $('.icon-edit[onclick="showAndScrollTo("update", "notes"); return false;"]').addClass('updateButton').attr('onclick', '');
@@ -236,10 +239,6 @@ var ProofReasonRedmineTheme = {
         e.preventDefault();
       });
 
-      //leaner update form - temporary dirty implementation
-      var issueAttributes = $('#update fieldset:nth-child(1)').addClass('issueAttributes');
-      var timeLogging = $('#update fieldset:nth-child(2)').addClass('timeLogging');
-      $('#update fieldset:nth-child(3)').addClass('issueJournalNotes');
 
       $('#update').prepend('<span class="minimize"><i class="bootstrap-icon-minus"></i> <i class="bootstrap-icon-plus"></i></span>');
       $('#update span.minimize').click(function() {
