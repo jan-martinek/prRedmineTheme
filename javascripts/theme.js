@@ -24,7 +24,7 @@ var ProofReasonRedmineTheme = {
       var year = issueDateArray[0];
       var month = issueDateArray[1]-1;
       var day = issueDateArray[2];
-      var hours = issueDateArray[3] ? issueDateArray[3] : 12;
+      var hours = issueDateArray[3] ? issueDateArray[3] : 17;
       var minutes = issueDateArray[4] ? issueDateArray[4] : 0;
 
       return new Date(year, month, day, hours, minutes);
