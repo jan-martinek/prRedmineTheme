@@ -365,6 +365,11 @@ var ProofReasonRedmineTheme = {
         ProofReasonRedmineTheme.TimeyIntegration.insertTimeyLogger();
       }
 
+      if (this.ppm.matchPage('timelog', 'index')) {
+        $('#context-menu').remove();
+        $('td.buttons').hide();
+      }
+
       $('#main>#content>.contextual .icon-time-add, .timeySwitch').click(function() {
         ProofReasonRedmineTheme.TimeyIntegration.insertTimeyLogger();
         return false;
