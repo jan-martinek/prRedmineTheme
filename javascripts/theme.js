@@ -686,7 +686,7 @@ var ProofReasonRedmineTheme = {
         }
 
         object.persons.sort(function(a, b) {
-          return a.name.split(' ')[1] > b.name.split(' ')[1];
+          return a.name.split(' ')[1].localeCompare(b.name.split(' ')[1]);
         });
 
         months.push(object);
