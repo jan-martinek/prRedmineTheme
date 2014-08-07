@@ -646,8 +646,51 @@ var ProofReasonRedmineTheme = {
 
       }
     },
+    
+    fixDate: function(date) {
+      var parts = date.split('-');
+      if (parts[1] < 10) {
+        parts[1] = '0' + parts[1];
+      }
+      if (parts[2] < 10) {
+        parts[2] = '0' + parts[2];
+      }
+
+      return parts.join('-')
+    },
+
+    removeOldAndMarkActual: function(data) {
+      var filtered = {};
+      var now = new Date();
+      var startOfDay = this.fixDate(now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate());
+
+      for (var name in data) {
+        for (var i = 0; i < data[name].length; i++) {
+          var entry = data[name][i],
+            from = this.fixDate(entry.from),
+            to = this.fixDate(entry.to);
+
+          // Entry is old
+          if (to < startOfDay) {
+            continue;
+          }
+
+          entry.actual = (from <= startOfDay);
+
+          if (!(name in filtered)) {
+            filtered[name] = [];
+          }
+
+          filtered[name].push(entry);
+        }
+      }
+
+      return filtered;
+    },
 
     createHtml: function(data) {
+      data = this.removeOldAndMarkActual(data);
+      
       // Group by month
       var grouped = {};
       for (var name in data) {
@@ -725,14 +768,21 @@ var ProofReasonRedmineTheme = {
                 break;
 
               default:
-                description = ' (' + absence.type + ')';
+                description = ' (' + absence.type.trim() + ')';
             }
 
+            var date;
             if (fromDay === toDay) {
-              dates.push(fromDay + '.' + description);
+              date = fromDay + '.';
             } else {
-              dates.push(fromDay + '.—' + toDay + '.' + description);
+              date = fromDay + '.—' + toDay + '.';
             }
+
+            if (absence.actual) {
+              date = '<span style="color:red">' + date + '</span>';
+            }
+            
+            dates.push(date + description);
           }
 
           html.push(dates.join(', '));
