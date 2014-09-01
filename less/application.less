@@ -139,6 +139,46 @@ textarea, textarea.wiki-edit {
 	background: white;
 }
 
+/* Issue */
+#content .issue {
+
+    /* Issue priority icons */
+    &.priority-3 td.priority:before,
+    &.priority-4 td.priority:before,
+    &.priority-5 td.priority:before {
+        font-size: 19px;
+        padding-right: 10px;
+        line-height: 12px;
+        padding-left:5px
+    }
+
+    // Low
+    &.priority-3 td.priority:before {
+        content: "●";
+        color: rgb(150,150,150);
+    }
+
+    // Normal
+    &.priority-3 td.priority:before {
+        content: "●";
+        color: rgb(47,120,190);
+    }
+
+    // High
+    &.priority-5 td.priority:before {
+        content: "!";
+        color:rgb(166,40,27);
+        font-family: Helvetica;
+        font-weight: bold;
+        padding-left:7px;
+        padding-right: 13px;
+    }
+    &.priority-5 td.priority {
+        color: rgb(166,40,27);
+        font-weight: bold;
+        line-height: 1
+    }
+}
 
 /* Issue updating form */
 #main, .issueAttributes, .timeLogging {
