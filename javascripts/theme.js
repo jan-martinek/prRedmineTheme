@@ -16,6 +16,7 @@ var ProofReasonRedmineTheme = {
     this.MakeMoney.init();
     this.ClickableIssueNames.init();
     this.SingleClickSelect.init();
+    this.CmdEnterFormSubmit.init();
   },
 
   tools: {
@@ -923,6 +924,17 @@ var ProofReasonRedmineTheme = {
         window.getSelection().addRange(range);
 
         lastMouseDownX = lastMouseDownY = null;
+      });
+    }
+  },
+
+  CmdEnterFormSubmit: {
+    init: function() {
+      $(document).on('keydown', 'textarea#issue_notes, textarea#issue_description', function(event) {
+        if (event.keyCode === 13 && (event.metaKey || event.ctrlKey)) {
+          $(this).parents('form').submit();
+          event.preventDefault();
+        }
       });
     }
   }
